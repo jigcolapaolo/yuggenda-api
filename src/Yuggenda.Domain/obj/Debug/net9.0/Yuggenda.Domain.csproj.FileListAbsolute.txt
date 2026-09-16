@@ -9,3 +9,4 @@ G:\Proyectos\Project\Yuggenda\yuggenda-api\src\Yuggenda.Domain\obj\Debug\net9.0\
 G:\Proyectos\Project\Yuggenda\yuggenda-api\src\Yuggenda.Domain\obj\Debug\net9.0\refint\Yuggenda.Domain.dll
 G:\Proyectos\Project\Yuggenda\yuggenda-api\src\Yuggenda.Domain\obj\Debug\net9.0\Yuggenda.Domain.pdb
 G:\Proyectos\Project\Yuggenda\yuggenda-api\src\Yuggenda.Domain\obj\Debug\net9.0\ref\Yuggenda.Domain.dll
+G:\Proyectos\Project\Yuggenda\yuggenda-api\src\Yuggenda.Domain\obj\Debug\net9.0\Yuggenda.Domain.sourcelink.json

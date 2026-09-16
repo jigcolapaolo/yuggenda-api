@@ -13,3 +13,4 @@ G:\Proyectos\Project\Yuggenda\yuggenda-api\src\Yuggenda.Application\obj\Debug\ne
 G:\Proyectos\Project\Yuggenda\yuggenda-api\src\Yuggenda.Application\obj\Debug\net9.0\refint\Yuggenda.Application.dll
 G:\Proyectos\Project\Yuggenda\yuggenda-api\src\Yuggenda.Application\obj\Debug\net9.0\Yuggenda.Application.pdb
 G:\Proyectos\Project\Yuggenda\yuggenda-api\src\Yuggenda.Application\obj\Debug\net9.0\ref\Yuggenda.Application.dll
+G:\Proyectos\Project\Yuggenda\yuggenda-api\src\Yuggenda.Application\obj\Debug\net9.0\Yuggenda.Application.sourcelink.json

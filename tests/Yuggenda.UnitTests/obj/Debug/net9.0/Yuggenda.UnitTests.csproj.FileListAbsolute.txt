@@ -96,3 +96,4 @@ G:\Proyectos\Project\Yuggenda\yuggenda-api\tests\Yuggenda.UnitTests\obj\Debug\ne
 G:\Proyectos\Project\Yuggenda\yuggenda-api\tests\Yuggenda.UnitTests\obj\Debug\net9.0\Yuggenda.UnitTests.pdb
 G:\Proyectos\Project\Yuggenda\yuggenda-api\tests\Yuggenda.UnitTests\obj\Debug\net9.0\Yuggenda.UnitTests.genruntimeconfig.cache
 G:\Proyectos\Project\Yuggenda\yuggenda-api\tests\Yuggenda.UnitTests\obj\Debug\net9.0\ref\Yuggenda.UnitTests.dll
+G:\Proyectos\Project\Yuggenda\yuggenda-api\tests\Yuggenda.UnitTests\obj\Debug\net9.0\Yuggenda.UnitTests.sourcelink.json

@@ -10,10 +10,11 @@
 using System;
 using System.Reflection;
 
+[assembly: Microsoft.Extensions.Configuration.UserSecrets.UserSecretsIdAttribute("Yuggenda-Development")]
 [assembly: System.Reflection.AssemblyCompanyAttribute("Yuggenda.Api")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+707848ae6ee9a96e4bba07055fa604645e913748")]
 [assembly: System.Reflection.AssemblyProductAttribute("Yuggenda.Api")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Yuggenda.Api")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

@@ -15,3 +15,6 @@ G:\Proyectos\Project\Yuggenda\yuggenda-api\src\Yuggenda.Infrastructure\obj\Debug
 G:\Proyectos\Project\Yuggenda\yuggenda-api\src\Yuggenda.Infrastructure\obj\Debug\net9.0\refint\Yuggenda.Infrastructure.dll
 G:\Proyectos\Project\Yuggenda\yuggenda-api\src\Yuggenda.Infrastructure\obj\Debug\net9.0\Yuggenda.Infrastructure.pdb
 G:\Proyectos\Project\Yuggenda\yuggenda-api\src\Yuggenda.Infrastructure\obj\Debug\net9.0\ref\Yuggenda.Infrastructure.dll
+G:\Proyectos\Project\Yuggenda\yuggenda-api\src\Yuggenda.Infrastructure\obj\Debug\net9.0\Yuggenda.Infrastructure.sourcelink.json
+G:\Proyectos\Project\Yuggenda\yuggenda-api\src\Yuggenda.Infrastructure\bin\Debug\net9.0\Yuggenda.Infrastructure.runtimeconfig.json
+G:\Proyectos\Project\Yuggenda\yuggenda-api\src\Yuggenda.Infrastructure\obj\Debug\net9.0\Yuggenda.Infrastructure.genruntimeconfig.cache
