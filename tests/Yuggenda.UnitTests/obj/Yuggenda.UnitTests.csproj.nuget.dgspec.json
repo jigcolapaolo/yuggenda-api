@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "G:\\Proyectos\\Project\\Yuggenda\\yuggenda-api\\tests\\Yuggenda.UnitTests\\Yuggenda.UnitTests.csproj": {}
+    "G:\\Proyectos\\Project\\yuggenda-api\\tests\\Yuggenda.UnitTests\\Yuggenda.UnitTests.csproj": {}
   },
   "projects": {
-    "G:\\Proyectos\\Project\\Yuggenda\\yuggenda-api\\tests\\Yuggenda.UnitTests\\Yuggenda.UnitTests.csproj": {
+    "G:\\Proyectos\\Project\\yuggenda-api\\tests\\Yuggenda.UnitTests\\Yuggenda.UnitTests.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "G:\\Proyectos\\Project\\Yuggenda\\yuggenda-api\\tests\\Yuggenda.UnitTests\\Yuggenda.UnitTests.csproj",
+        "projectUniqueName": "G:\\Proyectos\\Project\\yuggenda-api\\tests\\Yuggenda.UnitTests\\Yuggenda.UnitTests.csproj",
         "projectName": "Yuggenda.UnitTests",
-        "projectPath": "G:\\Proyectos\\Project\\Yuggenda\\yuggenda-api\\tests\\Yuggenda.UnitTests\\Yuggenda.UnitTests.csproj",
+        "projectPath": "G:\\Proyectos\\Project\\yuggenda-api\\tests\\Yuggenda.UnitTests\\Yuggenda.UnitTests.csproj",
         "packagesPath": "C:\\Users\\Juan\\.nuget\\packages\\",
-        "outputPath": "G:\\Proyectos\\Project\\Yuggenda\\yuggenda-api\\tests\\Yuggenda.UnitTests\\obj\\",
+        "outputPath": "G:\\Proyectos\\Project\\yuggenda-api\\tests\\Yuggenda.UnitTests\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "BN3y7V8uSt4=",
+  "dgSpecHash": "X1exJo6wTF0=",
   "success": true,
-  "projectFilePath": "G:\\Proyectos\\Project\\Yuggenda\\yuggenda-api\\src\\Yuggenda.Api\\Yuggenda.Api.csproj",
+  "projectFilePath": "G:\\Proyectos\\Project\\yuggenda-api\\src\\Yuggenda.Api\\Yuggenda.Api.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Juan\\.nuget\\packages\\microsoft.aspnetcore.openapi\\9.0.6\\microsoft.aspnetcore.openapi.9.0.6.nupkg.sha512",
     "C:\\Users\\Juan\\.nuget\\packages\\microsoft.entityframeworkcore\\9.0.12\\microsoft.entityframeworkcore.9.0.12.nupkg.sha512",

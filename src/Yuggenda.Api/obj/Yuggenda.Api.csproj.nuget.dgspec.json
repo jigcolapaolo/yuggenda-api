@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "G:\\Proyectos\\Project\\Yuggenda\\yuggenda-api\\src\\Yuggenda.Api\\Yuggenda.Api.csproj": {}
+    "G:\\Proyectos\\Project\\yuggenda-api\\src\\Yuggenda.Api\\Yuggenda.Api.csproj": {}
   },
   "projects": {
-    "G:\\Proyectos\\Project\\Yuggenda\\yuggenda-api\\src\\Yuggenda.Api\\Yuggenda.Api.csproj": {
+    "G:\\Proyectos\\Project\\yuggenda-api\\src\\Yuggenda.Api\\Yuggenda.Api.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "G:\\Proyectos\\Project\\Yuggenda\\yuggenda-api\\src\\Yuggenda.Api\\Yuggenda.Api.csproj",
+        "projectUniqueName": "G:\\Proyectos\\Project\\yuggenda-api\\src\\Yuggenda.Api\\Yuggenda.Api.csproj",
         "projectName": "Yuggenda.Api",
-        "projectPath": "G:\\Proyectos\\Project\\Yuggenda\\yuggenda-api\\src\\Yuggenda.Api\\Yuggenda.Api.csproj",
+        "projectPath": "G:\\Proyectos\\Project\\yuggenda-api\\src\\Yuggenda.Api\\Yuggenda.Api.csproj",
         "packagesPath": "C:\\Users\\Juan\\.nuget\\packages\\",
-        "outputPath": "G:\\Proyectos\\Project\\Yuggenda\\yuggenda-api\\src\\Yuggenda.Api\\obj\\",
+        "outputPath": "G:\\Proyectos\\Project\\yuggenda-api\\src\\Yuggenda.Api\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -32,11 +32,11 @@
           "net9.0": {
             "targetAlias": "net9.0",
             "projectReferences": {
-              "G:\\Proyectos\\Project\\Yuggenda\\yuggenda-api\\src\\Yuggenda.Application\\Yuggenda.Application.csproj": {
-                "projectPath": "G:\\Proyectos\\Project\\Yuggenda\\yuggenda-api\\src\\Yuggenda.Application\\Yuggenda.Application.csproj"
+              "G:\\Proyectos\\Project\\yuggenda-api\\src\\Yuggenda.Application\\Yuggenda.Application.csproj": {
+                "projectPath": "G:\\Proyectos\\Project\\yuggenda-api\\src\\Yuggenda.Application\\Yuggenda.Application.csproj"
               },
-              "G:\\Proyectos\\Project\\Yuggenda\\yuggenda-api\\src\\Yuggenda.Infrastructure\\Yuggenda.Infrastructure.csproj": {
-                "projectPath": "G:\\Proyectos\\Project\\Yuggenda\\yuggenda-api\\src\\Yuggenda.Infrastructure\\Yuggenda.Infrastructure.csproj"
+              "G:\\Proyectos\\Project\\yuggenda-api\\src\\Yuggenda.Infrastructure\\Yuggenda.Infrastructure.csproj": {
+                "projectPath": "G:\\Proyectos\\Project\\yuggenda-api\\src\\Yuggenda.Infrastructure\\Yuggenda.Infrastructure.csproj"
               }
             }
           }
@@ -85,14 +85,14 @@
         }
       }
     },
-    "G:\\Proyectos\\Project\\Yuggenda\\yuggenda-api\\src\\Yuggenda.Application\\Yuggenda.Application.csproj": {
+    "G:\\Proyectos\\Project\\yuggenda-api\\src\\Yuggenda.Application\\Yuggenda.Application.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "G:\\Proyectos\\Project\\Yuggenda\\yuggenda-api\\src\\Yuggenda.Application\\Yuggenda.Application.csproj",
+        "projectUniqueName": "G:\\Proyectos\\Project\\yuggenda-api\\src\\Yuggenda.Application\\Yuggenda.Application.csproj",
         "projectName": "Yuggenda.Application",
-        "projectPath": "G:\\Proyectos\\Project\\Yuggenda\\yuggenda-api\\src\\Yuggenda.Application\\Yuggenda.Application.csproj",
+        "projectPath": "G:\\Proyectos\\Project\\yuggenda-api\\src\\Yuggenda.Application\\Yuggenda.Application.csproj",
         "packagesPath": "C:\\Users\\Juan\\.nuget\\packages\\",
-        "outputPath": "G:\\Proyectos\\Project\\Yuggenda\\yuggenda-api\\src\\Yuggenda.Application\\obj\\",
+        "outputPath": "G:\\Proyectos\\Project\\yuggenda-api\\src\\Yuggenda.Application\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -113,8 +113,8 @@
           "net9.0": {
             "targetAlias": "net9.0",
             "projectReferences": {
-              "G:\\Proyectos\\Project\\Yuggenda\\yuggenda-api\\src\\Yuggenda.Domain\\Yuggenda.Domain.csproj": {
-                "projectPath": "G:\\Proyectos\\Project\\Yuggenda\\yuggenda-api\\src\\Yuggenda.Domain\\Yuggenda.Domain.csproj"
+              "G:\\Proyectos\\Project\\yuggenda-api\\src\\Yuggenda.Domain\\Yuggenda.Domain.csproj": {
+                "projectPath": "G:\\Proyectos\\Project\\yuggenda-api\\src\\Yuggenda.Domain\\Yuggenda.Domain.csproj"
               }
             }
           }
@@ -154,14 +154,14 @@
         }
       }
     },
-    "G:\\Proyectos\\Project\\Yuggenda\\yuggenda-api\\src\\Yuggenda.Domain\\Yuggenda.Domain.csproj": {
+    "G:\\Proyectos\\Project\\yuggenda-api\\src\\Yuggenda.Domain\\Yuggenda.Domain.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "G:\\Proyectos\\Project\\Yuggenda\\yuggenda-api\\src\\Yuggenda.Domain\\Yuggenda.Domain.csproj",
+        "projectUniqueName": "G:\\Proyectos\\Project\\yuggenda-api\\src\\Yuggenda.Domain\\Yuggenda.Domain.csproj",
         "projectName": "Yuggenda.Domain",
-        "projectPath": "G:\\Proyectos\\Project\\Yuggenda\\yuggenda-api\\src\\Yuggenda.Domain\\Yuggenda.Domain.csproj",
+        "projectPath": "G:\\Proyectos\\Project\\yuggenda-api\\src\\Yuggenda.Domain\\Yuggenda.Domain.csproj",
         "packagesPath": "C:\\Users\\Juan\\.nuget\\packages\\",
-        "outputPath": "G:\\Proyectos\\Project\\Yuggenda\\yuggenda-api\\src\\Yuggenda.Domain\\obj\\",
+        "outputPath": "G:\\Proyectos\\Project\\yuggenda-api\\src\\Yuggenda.Domain\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -219,14 +219,14 @@
         }
       }
     },
-    "G:\\Proyectos\\Project\\Yuggenda\\yuggenda-api\\src\\Yuggenda.Infrastructure\\Yuggenda.Infrastructure.csproj": {
+    "G:\\Proyectos\\Project\\yuggenda-api\\src\\Yuggenda.Infrastructure\\Yuggenda.Infrastructure.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "G:\\Proyectos\\Project\\Yuggenda\\yuggenda-api\\src\\Yuggenda.Infrastructure\\Yuggenda.Infrastructure.csproj",
+        "projectUniqueName": "G:\\Proyectos\\Project\\yuggenda-api\\src\\Yuggenda.Infrastructure\\Yuggenda.Infrastructure.csproj",
         "projectName": "Yuggenda.Infrastructure",
-        "projectPath": "G:\\Proyectos\\Project\\Yuggenda\\yuggenda-api\\src\\Yuggenda.Infrastructure\\Yuggenda.Infrastructure.csproj",
+        "projectPath": "G:\\Proyectos\\Project\\yuggenda-api\\src\\Yuggenda.Infrastructure\\Yuggenda.Infrastructure.csproj",
         "packagesPath": "C:\\Users\\Juan\\.nuget\\packages\\",
-        "outputPath": "G:\\Proyectos\\Project\\Yuggenda\\yuggenda-api\\src\\Yuggenda.Infrastructure\\obj\\",
+        "outputPath": "G:\\Proyectos\\Project\\yuggenda-api\\src\\Yuggenda.Infrastructure\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -247,11 +247,11 @@
           "net9.0": {
             "targetAlias": "net9.0",
             "projectReferences": {
-              "G:\\Proyectos\\Project\\Yuggenda\\yuggenda-api\\src\\Yuggenda.Application\\Yuggenda.Application.csproj": {
-                "projectPath": "G:\\Proyectos\\Project\\Yuggenda\\yuggenda-api\\src\\Yuggenda.Application\\Yuggenda.Application.csproj"
+              "G:\\Proyectos\\Project\\yuggenda-api\\src\\Yuggenda.Application\\Yuggenda.Application.csproj": {
+                "projectPath": "G:\\Proyectos\\Project\\yuggenda-api\\src\\Yuggenda.Application\\Yuggenda.Application.csproj"
               },
-              "G:\\Proyectos\\Project\\Yuggenda\\yuggenda-api\\src\\Yuggenda.Domain\\Yuggenda.Domain.csproj": {
-                "projectPath": "G:\\Proyectos\\Project\\Yuggenda\\yuggenda-api\\src\\Yuggenda.Domain\\Yuggenda.Domain.csproj"
+              "G:\\Proyectos\\Project\\yuggenda-api\\src\\Yuggenda.Domain\\Yuggenda.Domain.csproj": {
+                "projectPath": "G:\\Proyectos\\Project\\yuggenda-api\\src\\Yuggenda.Domain\\Yuggenda.Domain.csproj"
               }
             }
           }

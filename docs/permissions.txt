@@ -1,0 +1,71 @@
+# Yuggenda API - Permissions Model
+
+## 1. Roles per Business
+
+* `OWNER`
+* `ADMIN`
+* `STAFF`
+
+Customers are not business members and therefore do not receive business management roles.
+
+---
+
+## 2. Permissions by Role
+
+### Owner
+
+* Can manage the business.
+* Can manage business members.
+* Can assign and modify member roles.
+* Can manage services.
+* Can manage staff availability.
+* Can manage customers and appointments.
+* Can perform sensitive business operations.
+* Cannot remove the last `OWNER` from the business.
+
+### Admin
+
+* Can manage business resources.
+* Can create, edit, and deactivate services.
+* Can manage staff availability.
+* Can manage customers and appointments.
+* Can manage business members within the permissions allowed by the system.
+* Cannot perform owner-only operations such as transferring or removing the last owner.
+
+### Staff
+
+* Can view relevant business resources.
+* Can manage their own availability.
+* Can view and manage appointments assigned to them.
+* Can work with services they are assigned to.
+* Cannot manage business members or modify business-level permissions.
+
+---
+
+## 3. Customer Permissions
+
+### Registered Customer
+
+* Can access their own customer information.
+* Can view their own appointments.
+* Can create appointments where permitted.
+* Can cancel or reschedule their own appointments according to business rules.
+* Cannot access other customers' data.
+* Cannot manage business resources.
+
+### Guest Customer
+
+* Can create an appointment without an account.
+* Can provide the information required for the booking.
+* Does not receive authenticated access to the business management system.
+
+---
+
+## 4. Additional Rules
+
+* A user must be a member of a business to access its protected management resources.
+* Business members can only access resources belonging to their associated business.
+* Staff can only manage appointments and availability within their assigned business.
+* Customers can only access their own permitted customer and appointment data.
+* Sensitive operations must be protected by ASP.NET Core authorization policies and appropriate role checks.
+* Authorization must be enforced on the server and must not rely on client-side restrictions.

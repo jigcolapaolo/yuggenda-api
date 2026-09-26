@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Yuggenda.UnitTests")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+707848ae6ee9a96e4bba07055fa604645e913748")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+386592dcd3916a72ead6c76f7113652e7be1dfef")]
 [assembly: System.Reflection.AssemblyProductAttribute("Yuggenda.UnitTests")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Yuggenda.UnitTests")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

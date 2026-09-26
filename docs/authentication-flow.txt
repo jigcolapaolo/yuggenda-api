@@ -1,0 +1,108 @@
+# Yuggenda API - Authentication Flow
+
+## 1. Purpose
+
+Yuggenda uses JWT access tokens and refresh tokens for authentication and session management.
+
+The project does not use ASP.NET Core Identity. User accounts and refresh token management are implemented according to the application's requirements.
+
+---
+
+## 2. Registration Flow
+
+The client sends `POST /auth/register` with the required user information.
+
+1. The API validates the request.
+2. The system checks that the email is not already registered.
+3. The password is securely hashed.
+4. The user is created in PostgreSQL.
+5. A successful response is returned.
+
+Passwords are never stored in plain text.
+
+---
+
+## 3. Login Flow
+
+The client sends `POST /auth/login` with an email and password.
+
+1. The API validates the credentials.
+2. An access token is generated.
+3. A refresh token is generated.
+4. A hash of the refresh token is stored.
+5. Both tokens are returned to the client.
+
+Invalid credentials result in an authentication error without exposing whether the email or password was incorrect.
+
+---
+
+## 4. Protected Requests
+
+The client sends the access token using the `Authorization` header:
+
+```http
+Authorization: Bearer <access-token>
+
+ASP.NET Core validates the JWT before allowing access to protected endpoints.
+
+If the token is missing, invalid, or expired, the API returns:
+
+401 Unauthorized
+
+Authorization policies are evaluated after authentication when additional permissions are required.
+
+5. Refresh Token Flow
+
+When the access token expires, the client sends the refresh token to POST /auth/refresh.
+
+The API validates the refresh token.
+The stored token hash is checked.
+Expiration and revocation status are verified.
+The current refresh token is revoked.
+A new access token is generated.
+A new refresh token is generated and stored.
+
+Yuggenda uses refresh token rotation to reduce the risk associated with stolen refresh tokens.
+
+6. Logout Flow
+
+The client sends POST /auth/logout.
+
+The associated refresh token or session is revoked, preventing it from being used to obtain new access tokens.
+
+The current access token may remain valid until its expiration because access tokens are short-lived and independently validated.
+
+7. Authorization
+
+Authentication determines who the user is.
+
+Authorization determines what the user is allowed to do.
+
+Yuggenda will use ASP.NET Core authorization policies to control access to resources based on the user's role and relationship with a business.
+
+Examples include:
+
+Business owner permissions.
+Staff permissions.
+Customer access to their own appointments.
+Administrative operations.
+8. Security Considerations
+Access tokens should have a limited lifetime.
+Refresh tokens should have a finite lifetime.
+Refresh tokens should be stored as hashes.
+Revoked and expired refresh tokens must be rejected.
+JWT signing secrets must be stored securely and never committed to source control.
+Authentication credentials and tokens must not be written to logs.
+HTTPS should be used outside local development.
+
+9. Authentication Components
+Auth
+├── Registration
+├── Login
+├── Access Token Generation
+├── JWT Validation
+├── Refresh Token Rotation
+├── Session / Token Revocation
+└── Logout
+
+The exact implementation details may evolve as the authentication system is developed.

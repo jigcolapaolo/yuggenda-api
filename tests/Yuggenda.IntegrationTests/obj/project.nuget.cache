@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "FIrO/hulJUA=",
+  "dgSpecHash": "cMQsxamSwNs=",
   "success": true,
-  "projectFilePath": "G:\\Proyectos\\Project\\Yuggenda\\yuggenda-api\\tests\\Yuggenda.IntegrationTests\\Yuggenda.IntegrationTests.csproj",
+  "projectFilePath": "G:\\Proyectos\\Project\\yuggenda-api\\tests\\Yuggenda.IntegrationTests\\Yuggenda.IntegrationTests.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Juan\\.nuget\\packages\\coverlet.collector\\6.0.2\\coverlet.collector.6.0.2.nupkg.sha512",
     "C:\\Users\\Juan\\.nuget\\packages\\microsoft.codecoverage\\17.12.0\\microsoft.codecoverage.17.12.0.nupkg.sha512",

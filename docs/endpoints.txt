@@ -1,0 +1,115 @@
+# Yuggenda API - Base Endpoints
+
+## 1. Auth
+
+```http
+POST /auth/register
+POST /auth/login
+POST /auth/refresh
+POST /auth/logout
+```
+
+## 2. Users
+
+```http
+GET /users/me
+PATCH /users/me
+PATCH /users/change-password
+```
+
+## 3. Businesses
+
+```http
+POST /businesses
+GET /businesses
+GET /businesses/:id
+PATCH /businesses/:id
+DELETE /businesses/:id
+```
+
+### Business Members
+
+```http
+GET /businesses/:businessId/members
+POST /businesses/:businessId/members
+PATCH /businesses/:businessId/members/:memberId
+DELETE /businesses/:businessId/members/:memberId
+```
+
+## 4. Services
+
+```http
+POST /businesses/:businessId/services
+GET /businesses/:businessId/services
+GET /services/:id
+PATCH /services/:id
+DELETE /services/:id
+```
+
+### Service Staff
+
+```http
+POST /services/:serviceId/staff/:memberId
+DELETE /services/:serviceId/staff/:memberId
+```
+
+## 5. Availability
+
+```http
+GET /businesses/:businessId/availability
+POST /businesses/:businessId/availability
+PATCH /availability/:id
+DELETE /availability/:id
+```
+
+## 6. Customers
+
+```http
+GET /businesses/:businessId/customers
+POST /businesses/:businessId/customers
+GET /customers/:id
+PATCH /customers/:id
+```
+
+Customers may be created for both registered users and guest bookings.
+
+## 7. Appointments
+
+```http
+POST /businesses/:businessId/appointments
+GET /businesses/:businessId/appointments
+GET /appointments/:id
+PATCH /appointments/:id
+DELETE /appointments/:id
+```
+
+### Appointment Actions
+
+```http
+POST /appointments/:id/cancel
+POST /appointments/:id/reschedule
+```
+
+## 8. Scheduling
+
+```http
+GET /businesses/:businessId/availability/slots
+```
+
+This endpoint returns available time slots for a selected service and date.
+
+The system calculates the available slots based on:
+
+* Staff assigned to the service.
+* Staff availability.
+* Existing appointments.
+* Service duration.
+* Existing scheduling constraints.
+
+## 9. Health
+
+```http
+GET /health
+```
+
+Used to verify that the API and its required infrastructure are available.

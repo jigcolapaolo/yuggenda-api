@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "G:\\Proyectos\\Project\\Yuggenda\\yuggenda-api\\src\\Yuggenda.Domain\\Yuggenda.Domain.csproj": {}
+    "G:\\Proyectos\\Project\\yuggenda-api\\src\\Yuggenda.Domain\\Yuggenda.Domain.csproj": {}
   },
   "projects": {
-    "G:\\Proyectos\\Project\\Yuggenda\\yuggenda-api\\src\\Yuggenda.Domain\\Yuggenda.Domain.csproj": {
+    "G:\\Proyectos\\Project\\yuggenda-api\\src\\Yuggenda.Domain\\Yuggenda.Domain.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "G:\\Proyectos\\Project\\Yuggenda\\yuggenda-api\\src\\Yuggenda.Domain\\Yuggenda.Domain.csproj",
+        "projectUniqueName": "G:\\Proyectos\\Project\\yuggenda-api\\src\\Yuggenda.Domain\\Yuggenda.Domain.csproj",
         "projectName": "Yuggenda.Domain",
-        "projectPath": "G:\\Proyectos\\Project\\Yuggenda\\yuggenda-api\\src\\Yuggenda.Domain\\Yuggenda.Domain.csproj",
+        "projectPath": "G:\\Proyectos\\Project\\yuggenda-api\\src\\Yuggenda.Domain\\Yuggenda.Domain.csproj",
         "packagesPath": "C:\\Users\\Juan\\.nuget\\packages\\",
-        "outputPath": "G:\\Proyectos\\Project\\Yuggenda\\yuggenda-api\\src\\Yuggenda.Domain\\obj\\",
+        "outputPath": "G:\\Proyectos\\Project\\yuggenda-api\\src\\Yuggenda.Domain\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
