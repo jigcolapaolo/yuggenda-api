@@ -12,6 +12,11 @@ public class Customer
     public DateTime CreatedAt { get; private set; }
     public DateTime? UpdatedAt { get; private set; }
 
+    public Business Business { get; private set; } = null!;
+    public User? User { get; private set; }
+    public ICollection<Appointment> Appointments { get; private set; }
+        = new List<Appointment>();
+
     public Customer(
         Guid businessId,
         string firstName,

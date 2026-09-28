@@ -11,6 +11,18 @@ public class Business
     public DateTime CreatedAt { get; private set; }
     public DateTime? UpdatedAt { get; private set; }
 
+    public ICollection<BusinessMember> Members { get; private set; }
+        = new List<BusinessMember>();
+
+    public ICollection<Service> Services { get; private set; }
+        = new List<Service>();
+
+    public ICollection<Customer> Customers { get; private set; }
+        = new List<Customer>();
+
+    public ICollection<Appointment> Appointments { get; private set; }
+        = new List<Appointment>();
+
     public Business(
         string name,
         string timezone,

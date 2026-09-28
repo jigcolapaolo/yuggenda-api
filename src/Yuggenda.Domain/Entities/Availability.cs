@@ -25,6 +25,8 @@ public class Availability
     public DateTime CreatedAt { get; private set; }
     public DateTime? UpdatedAt { get; private set; }
 
+    public BusinessMember BusinessMember { get; private set; } = null!;
+
     public Availability(
         Guid businessMemberId,
         AvailabilityType type,

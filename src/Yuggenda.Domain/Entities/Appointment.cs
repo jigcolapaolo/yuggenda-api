@@ -16,6 +16,11 @@ public class Appointment
     public DateTime CreatedAt { get; private set; }
     public DateTime? UpdatedAt { get; private set; }
 
+    public Business Business { get; private set; } = null!;
+    public Customer Customer { get; private set; } = null!;
+    public Service Service { get; private set; } = null!;
+    public BusinessMember BusinessMember { get; private set; } = null!;
+
     public Appointment(
         Guid businessId,
         Guid customerId,

@@ -10,6 +10,12 @@ public class User
     public DateTime CreatedAt { get; private set; }
     public DateTime? UpdatedAt { get; private set; }
 
+    public ICollection<BusinessMember> BusinessMemberships { get; private set; }
+        = new List<BusinessMember>();
+
+    public ICollection<Customer> Customers { get; private set; }
+        = new List<Customer>();
+        
     public User(
         string email,
         string passwordHash,

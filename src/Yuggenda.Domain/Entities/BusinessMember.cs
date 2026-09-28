@@ -10,6 +10,15 @@ public class BusinessMember
     public BusinessRole Role { get; private set; }
     public DateTime CreatedAt { get; private set; }
 
+    public User User { get; private set; } = null!;
+    public Business Business { get; private set; } = null!;
+    public ICollection<Availability> Availabilities { get; private set; }
+        = new List<Availability>();
+    public ICollection<Service> Services { get; private set; }
+        = new List<Service>();
+    public ICollection<Appointment> Appointments { get; private set; }
+        = new List<Appointment>();
+
     public BusinessMember(
         Guid businessId,
         Guid userId,
