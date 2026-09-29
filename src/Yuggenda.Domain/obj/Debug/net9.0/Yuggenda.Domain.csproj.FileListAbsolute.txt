@@ -10,3 +10,15 @@ G:\Proyectos\Project\Yuggenda\yuggenda-api\src\Yuggenda.Domain\obj\Debug\net9.0\
 G:\Proyectos\Project\Yuggenda\yuggenda-api\src\Yuggenda.Domain\obj\Debug\net9.0\Yuggenda.Domain.pdb
 G:\Proyectos\Project\Yuggenda\yuggenda-api\src\Yuggenda.Domain\obj\Debug\net9.0\ref\Yuggenda.Domain.dll
 G:\Proyectos\Project\Yuggenda\yuggenda-api\src\Yuggenda.Domain\obj\Debug\net9.0\Yuggenda.Domain.sourcelink.json
+G:\Proyectos\Project\yuggenda-api\src\Yuggenda.Domain\bin\Debug\net9.0\Yuggenda.Domain.deps.json
+G:\Proyectos\Project\yuggenda-api\src\Yuggenda.Domain\bin\Debug\net9.0\Yuggenda.Domain.dll
+G:\Proyectos\Project\yuggenda-api\src\Yuggenda.Domain\bin\Debug\net9.0\Yuggenda.Domain.pdb
+G:\Proyectos\Project\yuggenda-api\src\Yuggenda.Domain\obj\Debug\net9.0\Yuggenda.Domain.GeneratedMSBuildEditorConfig.editorconfig
+G:\Proyectos\Project\yuggenda-api\src\Yuggenda.Domain\obj\Debug\net9.0\Yuggenda.Domain.AssemblyInfoInputs.cache
+G:\Proyectos\Project\yuggenda-api\src\Yuggenda.Domain\obj\Debug\net9.0\Yuggenda.Domain.AssemblyInfo.cs
+G:\Proyectos\Project\yuggenda-api\src\Yuggenda.Domain\obj\Debug\net9.0\Yuggenda.Domain.csproj.CoreCompileInputs.cache
+G:\Proyectos\Project\yuggenda-api\src\Yuggenda.Domain\obj\Debug\net9.0\Yuggenda.Domain.sourcelink.json
+G:\Proyectos\Project\yuggenda-api\src\Yuggenda.Domain\obj\Debug\net9.0\Yuggenda.Domain.dll
+G:\Proyectos\Project\yuggenda-api\src\Yuggenda.Domain\obj\Debug\net9.0\refint\Yuggenda.Domain.dll
+G:\Proyectos\Project\yuggenda-api\src\Yuggenda.Domain\obj\Debug\net9.0\Yuggenda.Domain.pdb
+G:\Proyectos\Project\yuggenda-api\src\Yuggenda.Domain\obj\Debug\net9.0\ref\Yuggenda.Domain.dll
