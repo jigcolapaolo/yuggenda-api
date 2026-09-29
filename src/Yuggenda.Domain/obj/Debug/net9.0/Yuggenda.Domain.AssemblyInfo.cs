@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Yuggenda.Domain")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+d64806561ddd6eda97df90121a5a4f18fd1fa69d")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+fe1ea459af766703a9eb5f8090e17331d4ed659d")]
 [assembly: System.Reflection.AssemblyProductAttribute("Yuggenda.Domain")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Yuggenda.Domain")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
