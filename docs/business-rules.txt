@@ -1,0 +1,70 @@
+# Yuggenda API - Business Rules
+
+## 1. General Rules
+
+* Every resource must belong to a valid business context where applicable.
+* Users must be authenticated to manage protected business resources.
+* Only business members with appropriate permissions can access or modify business resources.
+* Customers do not need an account to create an appointment.
+* Registered customers may have their customer record linked to a user account.
+* Guest customer information must be sufficient to complete a booking.
+
+## 2. Business Rules
+
+* A business must have a valid name.
+* A user must be authenticated to create or modify a business.
+* Every business must have at least one `OWNER`.
+* The last `OWNER` of a business cannot be removed or have their owner role revoked.
+* Business resources can only be accessed by authorized members of that business.
+
+## 3. Business Member Rules
+
+* A business member must belong to an existing business.
+* A user cannot have duplicate membership in the same business.
+* A `STAFF` member can provide services and have availability.
+* Only authorized roles can add, remove, or modify business members.
+* Business membership roles must correspond to defined roles.
+
+## 4. Service Rules
+
+* A service must belong to an existing business.
+* A service must have a valid name and duration.
+* Service duration must be greater than zero.
+* A service can only be assigned to staff members belonging to the same business.
+* Inactive services cannot be used to create new appointments.
+
+## 5. Customer Rules
+
+* A customer must belong to an existing business.
+* A customer may optionally be linked to a registered user.
+* Guest customers can create appointments without an account.
+* Customer contact information must be valid when required for booking.
+* A customer's data must only be accessible within the appropriate business context.
+
+## 6. Availability Rules
+
+* Availability must belong to a valid staff member.
+* Availability can only be configured for staff belonging to the same business.
+* Availability periods must contain valid time ranges.
+* Availability periods must not contain invalid or contradictory time ranges.
+* Appointment creation must respect the staff member's availability.
+
+## 7. Appointment Rules
+
+* An appointment must belong to an existing business, customer, service, and staff member.
+* The customer, service, and staff member must belong to the same business.
+* The selected staff member must be assigned to the selected service.
+* The appointment duration must match the service duration.
+* The appointment must fall within the staff member's available time.
+* A staff member cannot have conflicting active appointments.
+* Only valid appointment statuses can be used.
+* Cancellation and rescheduling must follow the rules defined for the current appointment status.
+* Completed or cancelled appointments cannot be modified as if they were active bookings.
+
+## 8. Authorization Rules
+
+* `OWNER`: full control over the business and its resources.
+* `ADMIN`: manages business resources and members according to defined permissions.
+* `STAFF`: manages assigned services, availability, and relevant appointments.
+* Customers can only access their own permitted customer and appointment data.
+* Guest customers do not receive authenticated access to the business management system.

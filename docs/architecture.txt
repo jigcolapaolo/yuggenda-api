@@ -1,0 +1,350 @@
+# Yuggenda API - Architecture
+
+## 1. Architecture Objective
+
+This architecture documents the proposed structure for the Yuggenda REST API, providing a clear separation of responsibilities while keeping the system maintainable and appropriately scoped for the project's objectives.
+
+The architecture is designed around the scheduling domain, with particular attention to availability management, appointment creation, business rules, transactional consistency, and future integrations.
+
+The system should remain simple enough to maintain while providing a solid foundation for introducing more advanced capabilities when they provide real value.
+
+---
+
+## 2. Design Principles
+
+- Feature-oriented organization.
+- Clear separation between API, application, domain, and data access responsibilities.
+- Entity Framework Core as the primary data access technology.
+- PostgreSQL as the main relational database.
+- Authentication based on JWT and refresh tokens.
+- Business rules centralized within the application/domain layer.
+- Validation at the API boundary.
+- Secure-by-default behavior.
+- Database transactions for operations that require consistency.
+- Concurrency considerations for appointment scheduling.
+- Avoid unnecessary abstractions and overengineering.
+- Introduce external services only when they solve a real project requirement.
+
+---
+
+## 3. General System Architecture
+
+The system is composed of the following layers:
+
+1. Client / Consumer
+
+2. API Layer
+   - ASP.NET Core Web API controllers.
+   - Request and response DTOs.
+   - Model validation.
+   - Authentication and authorization middleware.
+   - Exception handling.
+   - Swagger / OpenAPI documentation.
+
+3. Application Layer
+   - Application services.
+   - Use-case orchestration.
+   - Business logic.
+   - Scheduling and availability operations.
+   - Validation of domain-specific rules.
+
+4. Domain Layer
+   - Domain entities.
+   - Enumerations.
+   - Domain rules.
+   - Domain-specific abstractions when required.
+
+5. Data Layer
+   - Entity Framework Core.
+   - PostgreSQL.
+   - Entity configurations.
+   - Database migrations.
+   - Transaction management.
+
+6. Infrastructure Layer
+   - External service integrations.
+   - Email or notification services when required.
+   - Background processing when required.
+   - Other infrastructure concerns introduced during development.
+
+---
+
+## 4. Main Components
+
+### API
+
+The API layer is responsible for handling HTTP requests and responses.
+
+Responsibilities include:
+
+- Receiving HTTP requests.
+- Validating request models.
+- Authenticating users.
+- Authorizing access to resources.
+- Mapping requests to application operations.
+- Returning appropriate HTTP responses.
+- Exposing the API through Swagger / OpenAPI.
+
+Controllers should remain thin and delegate business operations to the application layer.
+
+### Auth
+
+The authentication system is responsible for user identity and session management.
+
+Potential responsibilities include:
+
+- User registration.
+- Login.
+- Access token generation.
+- Refresh token rotation.
+- Logout or refresh token invalidation.
+- Authentication middleware.
+- Authorization policies.
+
+### Scheduling
+
+The scheduling system is the core of Yuggenda.
+
+Responsibilities include:
+
+- Managing business availability.
+- Managing staff availability.
+- Defining service duration.
+- Calculating available time slots.
+- Creating appointments.
+- Preventing conflicting appointments.
+- Rescheduling appointments.
+- Cancelling appointments.
+- Enforcing scheduling-related business rules.
+
+This component should contain the main domain logic that differentiates Yuggenda from a conventional CRUD API.
+
+### Businesses
+
+Businesses represent the organizations that use Yuggenda to manage their services and appointments.
+
+Potential responsibilities include:
+
+- Business configuration.
+- Business staff management.
+- Service management.
+- Availability configuration.
+- Business-level access control.
+
+### Services
+
+Services represent the activities that customers can book.
+
+Examples could include:
+
+- Haircut.
+- Consultation.
+- Repair.
+- Personal training session.
+
+A service may contain information such as:
+
+- Name.
+- Description.
+- Duration.
+- Price.
+- Availability status.
+
+### Staff
+
+Staff members represent the people who provide services.
+
+Responsibilities may include:
+
+- Staff profile management.
+- Assigning services to staff members.
+- Managing staff availability.
+- Managing staff-specific scheduling constraints.
+
+### Appointments
+
+Appointments represent confirmed or pending bookings.
+
+Potential responsibilities include:
+
+- Creating appointments.
+- Updating appointments.
+- Rescheduling.
+- Cancellation.
+- Status management.
+- Customer association.
+- Service association.
+- Staff association.
+- Start and end time management.
+
+Appointment creation should ensure that scheduling constraints are respected and conflicting appointments cannot be created.
+
+---
+
+## 5. Project Structure
+
+The initial project structure should follow a clear separation of concerns:
+
+```text
+src/
+  Yuggenda.Api/
+  Yuggenda.Application/
+  Yuggenda.Domain/
+  Yuggenda.Infrastructure/
+
+The API project may contain:
+
+Yuggenda.Api/
+  Controllers/
+  Middleware/
+  Extensions/
+  Filters/
+  Program.cs
+
+The Application project may contain:
+
+Yuggenda.Application/
+  Services/
+  DTOs/
+  Interfaces/
+  Features/
+
+The Domain project may contain:
+
+Yuggenda.Domain/
+  Entities/
+  Enums/
+  ValueObjects/
+  Interfaces/
+
+The Infrastructure project may contain:
+
+Yuggenda.Infrastructure/
+  Persistence/
+    Context/
+    Configurations/
+    Migrations/
+  Services/
+  Repositories/
+
+The exact structure may evolve during development as the domain becomes more defined.
+
+6. Request Flow
+
+A typical request should follow this flow:
+
+The client sends an HTTP request.
+ASP.NET Core receives the request.
+Authentication and authorization are evaluated when required.
+The controller validates and maps the request.
+The application layer executes the requested use case.
+Domain rules are evaluated.
+Entity Framework Core accesses PostgreSQL when persistence is required.
+A transaction is used when the operation requires atomicity.
+The application layer returns the result.
+The controller produces the appropriate HTTP response.
+
+For an appointment creation request, the flow may be:
+
+Client
+  │
+  ▼
+Controller
+  │
+  ▼
+Application Service
+  │
+  ├── Validate request
+  ├── Check business rules
+  ├── Check availability
+  ├── Check conflicting appointments
+  │
+  ▼
+Entity Framework Core
+  │
+  ▼
+PostgreSQL
+  │
+  ▼
+Application Service
+  │
+  ▼
+Controller
+  │
+  ▼
+HTTP Response
+
+7. Data Access
+
+Entity Framework Core will be used as the primary data access technology.
+
+Responsibilities include:
+
+Entity mapping.
+Database queries.
+Relationship configuration.
+Database migrations.
+Transactions.
+Persistence of domain entities.
+
+PostgreSQL will be used as the primary relational database.
+
+Database-specific behavior should remain isolated from the rest of the application as much as reasonably possible.
+
+8. Concurrency and Consistency
+
+Appointment scheduling introduces concurrency concerns that are not present in a simple CRUD system.
+
+The architecture should account for scenarios such as:
+
+Two users attempting to book the same time slot.
+A staff member becoming unavailable while an appointment is being created.
+Simultaneous appointment updates.
+Duplicate requests caused by retries.
+
+Operations that modify scheduling state must maintain database consistency and prevent invalid appointment states.
+
+The exact concurrency strategy will be determined during implementation based on the final domain model and database constraints.
+
+9. External Integrations
+
+External integrations will only be introduced when they provide meaningful functionality to the system.
+
+Potential integrations may include:
+
+Email or notification providers.
+Payment providers.
+Background processing infrastructure.
+AI services.
+Caching or distributed services.
+
+These integrations should be isolated behind appropriate abstractions so that the core scheduling domain does not depend directly on external providers.
+
+10. Development and Infrastructure
+
+The project will use:
+
+ASP.NET Core Web API.
+Entity Framework Core.
+PostgreSQL.
+Docker for reproducible development environments.
+Swagger / OpenAPI for API documentation.
+Automated testing for application and domain behavior.
+
+Additional infrastructure will be introduced only when justified by the requirements of the project.
+
+11. Architecture Evolution
+
+This architecture represents the initial design and is expected to evolve as Yuggenda is developed.
+
+New components, infrastructure, or architectural patterns should be introduced when they solve a concrete problem rather than for the purpose of increasing technical complexity.
+
+Significant architectural decisions should be documented as the project evolves.
+
+12. Summary
+
+Yuggenda uses a layered architecture centered around the scheduling domain.
+
+The API layer handles HTTP concerns, the application layer coordinates use cases and business operations, the domain layer represents core business concepts and rules, and the infrastructure layer provides persistence and external integrations.
+
+The architecture places particular emphasis on reliable appointment scheduling, transactional consistency, and concurrency while keeping the overall system appropriately scoped and avoiding unnecessary complexity.

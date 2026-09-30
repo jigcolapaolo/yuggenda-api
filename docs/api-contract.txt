@@ -1,0 +1,237 @@
+# Yuggenda API - API Contract Baseline
+
+## 1. Standard Response Format
+
+### Successful Response
+
+Successful responses should return the appropriate HTTP status code and a clear response payload.
+
+Example:
+
+```json
+{
+  "success": true,
+  "data": {},
+  "message": "Appointment created"
+}
+```
+
+### Error Response
+
+Error responses use the appropriate HTTP status code and provide enough information to identify the type of error without exposing internal application details.
+
+Example:
+
+```json
+{
+  "statusCode": 404,
+  "message": "Appointment not found",
+  "error": "Not Found",
+  "requestId": "550e8400-e29b-41d4-a716-446655440000"
+}
+```
+
+The `requestId` allows the request associated with the error to be identified and traced.
+
+---
+
+## 2. HTTP Status Codes
+
+### 400 - Bad Request
+
+The request contains invalid data or does not satisfy validation rules.
+
+Example:
+
+```json
+{
+  "statusCode": 400,
+  "message": [
+    "email must be a valid email",
+    "duration must be greater than 0"
+  ],
+  "error": "Bad Request",
+  "requestId": "..."
+}
+```
+
+Mainly used for DTO and request validation errors.
+
+### 401 - Unauthorized
+
+The request requires authentication or the provided credentials are invalid.
+
+Examples:
+
+* Missing JWT.
+* Invalid JWT.
+* Expired access token.
+* Invalid or expired refresh token.
+
+```json
+{
+  "statusCode": 401,
+  "message": "Unauthorized",
+  "error": "Unauthorized",
+  "requestId": "..."
+}
+```
+
+### 403 - Forbidden
+
+The user is authenticated but does not have sufficient permissions to perform the requested operation.
+
+Example:
+
+```json
+{
+  "statusCode": 403,
+  "message": "Business access denied",
+  "error": "Forbidden",
+  "requestId": "..."
+}
+```
+
+### 404 - Not Found
+
+The requested resource does not exist.
+
+Example:
+
+```json
+{
+  "statusCode": 404,
+  "message": "Service not found",
+  "error": "Not Found",
+  "requestId": "..."
+}
+```
+
+### 409 - Conflict
+
+The requested operation conflicts with an existing resource or domain constraint.
+
+Examples:
+
+* Duplicate business membership.
+* Duplicate resource that must be unique.
+* Appointment time conflict.
+* Staff member already booked.
+* Invalid appointment state transition.
+
+Example:
+
+```json
+{
+  "statusCode": 409,
+  "message": "The selected time slot is no longer available",
+  "error": "Conflict",
+  "requestId": "..."
+}
+```
+
+### 422 - Unprocessable Entity
+
+The request is structurally valid but cannot be processed because it violates a domain rule.
+
+Examples:
+
+* Staff member cannot provide the selected service.
+* Appointment is outside staff availability.
+* Inactive service selected for booking.
+
+Example:
+
+```json
+{
+  "statusCode": 422,
+  "message": "The selected staff member is not available at this time",
+  "error": "Unprocessable Entity",
+  "requestId": "..."
+}
+```
+
+### 429 - Too Many Requests
+
+The client has exceeded the configured rate limit for the endpoint.
+
+```json
+{
+  "statusCode": 429,
+  "message": "Too many requests",
+  "error": "Too Many Requests",
+  "requestId": "..."
+}
+```
+
+### 500 - Internal Server Error
+
+An unexpected server-side error occurred.
+
+Internal implementation details must not be exposed to the client.
+
+Example:
+
+```json
+{
+  "statusCode": 500,
+  "message": "Internal server error",
+  "requestId": "..."
+}
+```
+
+---
+
+## 3. Request ID
+
+Each request receives a unique identifier through the header:
+
+```text
+X-Request-Id
+```
+
+The same identifier is included in error responses through the `requestId` field.
+
+Example:
+
+```json
+{
+  "statusCode": 409,
+  "message": "The selected time slot is no longer available",
+  "error": "Conflict",
+  "requestId": "550e8400-e29b-41d4-a716-446655440000"
+}
+```
+
+This allows application logs and API responses to be correlated.
+
+---
+
+## 4. General Conventions
+
+* Responses should use consistent HTTP status codes.
+* Validation errors should return `400 Bad Request`.
+* Authentication failures should return `401 Unauthorized`.
+* Authorization failures should return `403 Forbidden`.
+* Missing resources should return `404 Not Found`.
+* Resource or scheduling conflicts should return `409 Conflict`.
+* Domain validation failures that are structurally valid but cannot be processed may return `422 Unprocessable Entity`.
+* Internal errors must not expose implementation details.
+* Error responses should include a `requestId`.
+* Endpoints should use resource-oriented naming conventions.
+* Appointment operations should clearly communicate scheduling conflicts and invalid state transitions.
+
+---
+
+## 5. Main Resources
+
+* Auth
+* Users
+* Businesses
+* Business Members
+* Services
+* Availability
+* Customers
+* Appointments
+* Scheduling
+* Health

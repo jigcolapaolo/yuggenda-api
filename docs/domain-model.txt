@@ -1,0 +1,296 @@
+# Yuggenda API - Domain Model
+
+## Overview
+
+Yuggenda is a scheduling and booking system for service-based businesses.
+
+The domain is centered around businesses, their staff, services, availability, customers, and appointments. The main goal is to allow customers to book services while ensuring that appointments respect staff availability and do not conflict with existing bookings.
+
+Customers may book either as registered users or as guests without an account.
+
+---
+
+## Core Entities
+
+### User
+
+Represents an authenticated platform user.
+
+A user can:
+
+* Own or manage businesses.
+* Work as a staff member for a business.
+* Have a customer profile for one or more businesses.
+* Authenticate and manage their account.
+
+A `User` represents an account, not necessarily a customer.
+
+---
+
+### Business
+
+Represents a business or service provider using Yuggenda.
+
+A business can:
+
+* Manage its information.
+* Define bookable services.
+* Manage staff members.
+* Configure staff availability.
+* Manage customers.
+* Manage appointments.
+
+A business is the main scope for most scheduling data.
+
+---
+
+### BusinessMember
+
+Represents the relationship between a user and a business.
+
+A business member defines the user's role within that business.
+
+Possible roles include:
+
+* `OWNER`
+* `ADMIN`
+* `STAFF`
+
+A `BusinessMember` is also used to identify staff members. A separate `StaffMember` entity is not required unless staff-specific data becomes necessary later.
+
+---
+
+### Service
+
+Represents a service that can be booked by customers.
+
+A service belongs to a business and defines information such as:
+
+* Name
+* Description
+* Duration
+* Price
+* Active/inactive status
+
+A service can be offered by one or more staff members.
+
+---
+
+### Customer
+
+Represents a customer of a specific business.
+
+A customer may be:
+
+* Linked to a registered `User`.
+* A guest customer without a Yuggenda account.
+
+Customer information may include:
+
+* Name
+* Email
+* Phone
+* Optional linked user account
+
+A customer belongs to a business so that each business can maintain its own customer records.
+
+---
+
+### Availability
+
+Represents the periods during which a staff member is available to provide services.
+
+Availability may include:
+
+* Recurring weekly schedules.
+* Specific unavailable periods.
+* Exceptions such as holidays or days off.
+
+Availability is used when calculating bookable time slots.
+
+---
+
+### Appointment
+
+Represents a customer's reservation for a service.
+
+An appointment connects:
+
+* A business.
+* A customer.
+* A service.
+* A staff member.
+* A start time.
+* An end time.
+* A status.
+
+The appointment is the central transactional entity of the scheduling domain.
+
+The system must ensure that:
+
+* The selected staff member can provide the service.
+* The appointment falls within their availability.
+* The appointment does not overlap with another active appointment for the same staff member.
+* The appointment belongs to the correct business.
+
+---
+
+## Relationships
+
+```text
+User
+ ├── BusinessMember ── Business
+ │                       ├── Service
+ │                       ├── Availability
+ │                       └── Appointment
+ │
+ └── Customer (optional)
+                         │
+                         └── Appointment
+```
+
+More specifically:
+
+```text
+Business
+ ├── BusinessMembers
+ ├── Services
+ ├── Customers
+ └── Appointments
+
+BusinessMember
+ ├── User
+ ├── Business
+ ├── Role
+ ├── Services
+ ├── Availability
+ └── Appointments
+
+Customer
+ ├── Business
+ ├── Optional User
+ └── Appointments
+
+Service
+ ├── Business
+ ├── Staff Members
+ └── Appointments
+
+Appointment
+ ├── Business
+ ├── Customer
+ ├── Service
+ └── Staff Member
+```
+
+---
+
+## Booking Model
+
+The main booking flow is:
+
+```text
+Business
+   ↓
+Defines Services
+   ↓
+Assigns Services to Staff
+   ↓
+Configures Staff Availability
+   ↓
+System calculates available time slots
+   ↓
+Customer selects a Service and time
+   ↓
+System validates availability and conflicts
+   ↓
+Appointment is created
+```
+
+Customers do not need an account to complete the booking.
+
+For registered customers, their `Customer` record may be linked to their `User` account.
+
+---
+
+## Guest Customers
+
+Yuggenda supports guest bookings.
+
+A guest customer is represented by a `Customer` record with no associated `User`.
+
+```text
+Customer
+ ├── Business
+ ├── UserId: null
+ ├── Name
+ ├── Email
+ └── Phone
+```
+
+A registered customer can instead have:
+
+```text
+Customer
+ ├── Business
+ ├── UserId: <registered user>
+ ├── Name
+ ├── Email
+ └── Phone
+```
+
+This allows the booking system to support both simple guest reservations and authenticated customer experiences without making account creation mandatory.
+
+---
+
+## Core Business Rules
+
+The domain must enforce several important rules:
+
+1. A service belongs to exactly one business.
+2. A business member belongs to exactly one business.
+3. Only appropriate business members can manage business resources.
+4. A service can only be assigned to staff belonging to the same business.
+5. An appointment must belong to the same business as its customer, service, and staff member.
+6. A staff member must be available during the requested appointment period.
+7. A staff member cannot have conflicting active appointments.
+8. Appointment duration is determined by the selected service.
+9. Guest customers must provide the information required to complete a booking.
+10. Appointment state determines which operations are allowed, such as cancellation or rescheduling.
+
+---
+
+## Domain Boundaries
+
+The initial domain focuses on scheduling and booking.
+
+The following features are intentionally outside the initial core model:
+
+* Payments
+* Notifications
+* Recurring appointments
+* External calendar integrations
+* Background job processing
+* Event-driven workflows
+* AI-assisted booking
+
+These may be introduced later if they provide meaningful value to the project.
+
+---
+
+## Summary
+
+Yuggenda's core domain can be summarized as:
+
+```text
+Users manage Businesses
+Businesses have Services
+BusinessMembers provide Services
+BusinessMembers have Availability
+Customers book Services
+Appointments connect Customers, Services and Staff
+```
+
+The central problem is ensuring that customers can book services while the system correctly handles staff availability, appointment conflicts, and business boundaries.
+
+The model intentionally supports both registered and guest customers while keeping authentication concerns separate from the core customer concept.

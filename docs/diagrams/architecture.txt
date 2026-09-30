@@ -1,0 +1,57 @@
+# Yuggenda API - Architecture Overview
+
+```text
+Client
+  |
+  v
+ASP.NET Core Web API
+  |
+  |-- Auth
+  |-- Users
+  |-- Businesses
+  |-- Business Members
+  |-- Services
+  |-- Availability
+  |-- Customers
+  |-- Appointments
+  |-- Scheduling
+  |-- Common / Configuration
+  |
+  +--> PostgreSQL
+  |      |
+  |      +--> Entity Framework Core
+  |
+  +--> Redis
+  |
+  +--> Swagger / OpenAPI
+  |
+  +--> Docker Compose
+```
+
+## Main Components
+
+### Client
+
+Consumes the REST API to authenticate users, manage businesses, configure services and availability, and create or manage appointments.
+
+### ASP.NET Core API
+
+Provides the HTTP interface and coordinates authentication, authorization, validation, business logic, scheduling, and data access.
+
+### PostgreSQL
+
+Primary relational database for users, businesses, members, services, availability, customers, and appointments.
+
+Entity Framework Core is used as the main data access technology.
+
+### Redis
+
+Used for infrastructure concerns where short-lived or distributed state is useful, such as caching, rate limiting, or other performance-related features introduced during development.
+
+### Swagger / OpenAPI
+
+Provides interactive API documentation and allows the API contract to be inspected and tested during development.
+
+### Docker Compose
+
+Provides a consistent local development environment for infrastructure dependencies.
