@@ -132,13 +132,19 @@ Cancelled
 ## 9. Timezone Rules
 
 * Each business must define a valid IANA timezone identifier.
-* The business timezone is the source of truth for scheduling operations.
+* The business timezone is the source of truth for all scheduling operations.
 * Staff availability is interpreted using the business timezone.
-* Available slots are calculated using the business timezone.
-* Appointment times are interpreted according to the business timezone when creating or modifying bookings.
-* Appointment timestamps represent absolute points in time and should be persisted in UTC.
-* The API server's local timezone must not affect business scheduling.
-* Client timezone may be used for presentation purposes but must not change the business scheduling rules.
+* Weekly availability rules are evaluated according to the business's local calendar.
+* Exception dates are interpreted according to the business's local calendar.
+* Available appointment slots are calculated using the business timezone.
+* Appointment date and time input is interpreted according to the business timezone when creating or modifying bookings.
+* Appointment timestamps represent absolute points in time and are persisted as UTC values.
+* The API server's local timezone must not affect scheduling behavior.
+* The client's local timezone may be used for presentation purposes but must not change the business scheduling rules.
+* `Appointment.StartTime` and `Appointment.EndTime` use `DateTimeOffset` to represent appointment instants.
+* `Availability.StartTime` and `Availability.EndTime` use local time values because availability represents business calendar rules rather than absolute instants.
+* `Business.Timezone` is stored separately from appointment timestamps because PostgreSQL timestamps do not preserve the business's original timezone identifier.
+
 
 
 ## 10. Date and Time Precision Rules
