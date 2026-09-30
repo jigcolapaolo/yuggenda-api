@@ -419,7 +419,14 @@ public static class DevelopmentDataSeeder
 
         // APPOINTMENTS
 
-        var nextMonday = DateTime.UtcNow.Date;
+        var argentinaOffset = TimeSpan.FromHours(-3);
+
+        var today = DateTimeOffset.Now
+            .ToOffset(argentinaOffset)
+            .DateTime
+            .Date;
+
+        var nextMonday = today;
 
         while (nextMonday.DayOfWeek != DayOfWeek.Monday)
         {
@@ -433,35 +440,39 @@ public static class DevelopmentDataSeeder
             registeredCustomer.Id,
             barberHaircut.Id,
             barberStaff1.Id,
-            nextMonday.AddHours(12),
-            nextMonday.AddHours(12).AddMinutes(30),
-            "Regular haircut.");
+            new DateTimeOffset(nextMonday.AddHours(12), argentinaOffset).ToUniversalTime(),
+            new DateTimeOffset(nextMonday.AddHours(12).AddMinutes(30), argentinaOffset).ToUniversalTime(),
+            "Regular haircut."
+        );
 
         var barberAppointment2 = new Appointment(
             barberShop.Id,
             guestBarberCustomer.Id,
             beardTrim.Id,
             barberStaff2.Id,
-            nextTuesday.AddHours(14),
-            nextTuesday.AddHours(14).AddMinutes(20),
-            "Guest customer appointment.");
+            new DateTimeOffset(nextTuesday.AddHours(14), argentinaOffset).ToUniversalTime(),
+            new DateTimeOffset(nextTuesday.AddHours(14).AddMinutes(20), argentinaOffset).ToUniversalTime(),
+            "Guest customer appointment."
+        );
 
         var fitnessAppointment = new Appointment(
             fitness.Id,
             registeredFitnessCustomer.Id,
             personalTraining.Id,
             fitnessStaff.Id,
-            nextMonday.AddHours(10),
-            nextMonday.AddHours(11),
-            "First personal training session.");
+            new DateTimeOffset(nextMonday.AddHours(10), argentinaOffset).ToUniversalTime(),
+            new DateTimeOffset(nextMonday.AddHours(11), argentinaOffset).ToUniversalTime(),
+            "First personal training session."
+        );
 
         var guestFitnessAppointment = new Appointment(
             fitness.Id,
             guestFitnessCustomer.Id,
             fitnessAssessment.Id,
             fitnessStaff.Id,
-            nextMonday.AddHours(12),
-            nextMonday.AddHours(12).AddMinutes(45));
+            new DateTimeOffset(nextMonday.AddHours(12), argentinaOffset).ToUniversalTime(),
+            new DateTimeOffset(nextMonday.AddHours(12).AddMinutes(45), argentinaOffset).ToUniversalTime()
+        );
 
         context.Appointments.AddRange(
             barberAppointment1,

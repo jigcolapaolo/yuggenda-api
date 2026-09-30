@@ -9,8 +9,8 @@ public class Appointment
     public Guid CustomerId { get; private set; }
     public Guid ServiceId { get; private set; }
     public Guid BusinessMemberId { get; private set; }
-    public DateTime StartTime { get; private set; }
-    public DateTime EndTime { get; private set; }
+    public DateTimeOffset StartTime { get; private set; }
+    public DateTimeOffset EndTime { get; private set; }
     public AppointmentStatus Status { get; private set; }
     public string? Notes { get; private set; }
     public DateTime CreatedAt { get; private set; }
@@ -26,8 +26,8 @@ public class Appointment
         Guid customerId,
         Guid serviceId,
         Guid businessMemberId,
-        DateTime startTime,
-        DateTime endTime,
+        DateTimeOffset startTime,
+        DateTimeOffset endTime,
         string? notes = null
     )
     {
