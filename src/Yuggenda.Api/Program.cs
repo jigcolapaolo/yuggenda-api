@@ -1,4 +1,6 @@
 using Yuggenda.Infrastructure;
+using Yuggenda.Infrastructure.Persistence.Context;
+using Yuggenda.Infrastructure.Persistence.Seed;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -8,6 +10,16 @@ builder.Services.AddOpenApi();
 builder.Services.AddInfrastructure(builder.Configuration);
 
 var app = builder.Build();
+
+if (app.Environment.IsDevelopment())
+{
+    using var scope = app.Services.CreateScope();
+
+    var context = scope.ServiceProvider
+        .GetRequiredService<YuggendaDbContext>();
+
+    await DevelopmentDataSeeder.SeedAsync(context);
+}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
