@@ -1,0 +1,33 @@
+# Build artifacts
+**/bin/
+**/obj/
+
+# Test and coverage artifacts
+**/TestResults/
+**/coverage/
+
+# Git
+.git/
+.gitignore
+
+# IDEs
+.vs/
+.vscode/
+.idea/
+
+# Docker
+Dockerfile
+docker-compose.yml
+docker-compose.*.yml
+
+# Local configuration and secrets
+.env
+.env.*
+!.env.example
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
