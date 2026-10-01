@@ -54,18 +54,29 @@ The system is composed of the following layers:
    - Domain rules.
    - Domain-specific abstractions when required.
 
-5. Data Layer
-   - Entity Framework Core.
-   - PostgreSQL.
-   - Entity configurations.
-   - Database migrations.
-   - Transaction management.
+5. Infrastructure Layer
 
-6. Infrastructure Layer
-   - External service integrations.
-   - Email or notification services when required.
-   - Background processing when required.
-   - Other infrastructure concerns introduced during development.
+The Infrastructure layer provides persistence and integrations required by the application.
+
+### Persistence
+
+- Entity Framework Core.
+- PostgreSQL through Neon.
+- Entity configurations.
+- Database migrations.
+- Database transactions.
+- Development seed data.
+
+PostgreSQL is hosted exclusively through Neon and is not run inside Docker.
+
+### External Services and Infrastructure
+
+- Redis for infrastructure concerns such as rate limiting and caching.
+- Email or notification services when required.
+- Background processing when required.
+- Other external integrations introduced during development.
+
+Infrastructure concerns should remain isolated from the application and domain layers through appropriate abstractions when necessary.
 
 ---
 

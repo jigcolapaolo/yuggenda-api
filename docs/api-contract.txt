@@ -1,22 +1,37 @@
 # Yuggenda API - API Contract Baseline
 
-## 1. Standard Response Format
+## 1. Successful Responses
 
-### Successful Response
+Successful responses use the appropriate HTTP status code and return a resource-specific response payload.
 
-Successful responses should return the appropriate HTTP status code and a clear response payload.
+The response structure depends on the endpoint and resource.
+
+### 200 OK
 
 Example:
 
 ```json
 {
-  "success": true,
-  "data": {},
-  "message": "Appointment created"
+  "id": "business-id",
+  "name": "Barber Shop"
 }
 ```
 
-### Error Response
+### 201 Created
+
+Example:
+
+```json
+{
+  "id": "service-id",
+  "name": "Haircut",
+  "durationMinutes": 30
+}
+```
+
+---
+
+## 2. Error Response
 
 Error responses use the appropriate HTTP status code and provide enough information to identify the type of error without exposing internal application details.
 
@@ -35,11 +50,18 @@ The `requestId` allows the request associated with the error to be identified an
 
 ---
 
-## 2. HTTP Status Codes
+## 3. HTTP Status Codes
 
 ### 400 - Bad Request
 
-The request contains invalid data or does not satisfy validation rules.
+The request itself is invalid or fails input validation.
+
+Examples:
+
+* Invalid email format.
+* Missing required field.
+* Duration is not a valid value.
+* Invalid request parameter.
 
 Example:
 
@@ -66,7 +88,10 @@ Examples:
 * Missing JWT.
 * Invalid JWT.
 * Expired access token.
-* Invalid or expired refresh token.
+* Invalid refresh token.
+* Expired refresh token.
+
+Example:
 
 ```json
 {
@@ -109,14 +134,14 @@ Example:
 
 ### 409 - Conflict
 
-The requested operation conflicts with an existing resource or domain constraint.
+The requested operation conflicts with the current state of an existing resource.
 
 Examples:
 
 * Duplicate business membership.
 * Duplicate resource that must be unique.
 * Appointment time conflict.
-* Staff member already booked.
+* Staff member has a conflicting appointment.
 * Invalid appointment state transition.
 
 Example:
@@ -155,6 +180,8 @@ Example:
 
 The client has exceeded the configured rate limit for the endpoint.
 
+Example:
+
 ```json
 {
   "statusCode": 429,
@@ -182,17 +209,19 @@ Example:
 
 ---
 
-## 3. Request ID
+## 4. Request ID
 
-Each request receives a unique identifier through the header:
+Each request is assigned a unique request identifier by the API.
 
-```text
-X-Request-Id
-```
-
-The same identifier is included in error responses through the `requestId` field.
+The identifier is exposed through the `X-Request-Id` response header and is included in error responses through the `requestId` field.
 
 Example:
+
+```text
+X-Request-Id: 550e8400-e29b-41d4-a716-446655440000
+```
+
+Example error response:
 
 ```json
 {
@@ -203,11 +232,41 @@ Example:
 }
 ```
 
-This allows application logs and API responses to be correlated.
+The request identifier allows application logs and API responses to be correlated.
 
 ---
 
-## 4. General Conventions
+## 5. Authentication
+
+Protected endpoints require a valid JWT access token using the Bearer authentication scheme.
+
+Example:
+
+```http
+Authorization: Bearer <access-token>
+```
+
+Endpoints that do not require authentication are explicitly identified in the endpoint documentation.
+
+Authentication and authorization rules are defined in the authentication and permissions documentation.
+
+---
+
+## 6. Date and Time Format
+
+API date-time values use ISO 8601 format.
+
+The exact timezone handling policy is defined separately in the scheduling and timezone documentation.
+
+Example:
+
+```text
+2026-10-05T14:30:00
+```
+
+---
+
+## 7. General Conventions
 
 * Responses should use consistent HTTP status codes.
 * Validation errors should return `400 Bad Request`.
@@ -219,11 +278,13 @@ This allows application logs and API responses to be correlated.
 * Internal errors must not expose implementation details.
 * Error responses should include a `requestId`.
 * Endpoints should use resource-oriented naming conventions.
+* Protected endpoints should use JWT Bearer authentication.
 * Appointment operations should clearly communicate scheduling conflicts and invalid state transitions.
+* API date-time values should use ISO 8601 format.
 
 ---
 
-## 5. Main Resources
+## 8. Main Resources
 
 * Auth
 * Users

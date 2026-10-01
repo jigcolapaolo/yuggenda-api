@@ -48,8 +48,15 @@
 * Availability periods must contain valid time ranges.
 * Availability periods must not contain invalid or contradictory time ranges.
 * Appointment creation must respect the staff member's availability.
+* A staff member may have multiple availability periods on the same day.
+* Multiple availability periods may be used to represent breaks within the working day.
+* Availability periods for the same staff member and date must not overlap.
+* A service appointment must fit entirely within a single availability period.
+* An appointment cannot span a gap between availability periods.
 
 ## 7. Appointment Rules
+
+### General Rules
 
 * An appointment must belong to an existing business, customer, service, and staff member.
 * The customer, service, and staff member must belong to the same business.
@@ -58,8 +65,60 @@
 * The appointment must fall within the staff member's available time.
 * A staff member cannot have conflicting active appointments.
 * Only valid appointment statuses can be used.
-* Cancellation and rescheduling must follow the rules defined for the current appointment status.
-* Completed or cancelled appointments cannot be modified as if they were active bookings.
+
+### Appointment Statuses
+
+Appointments can have the following statuses:
+
+* `Scheduled`: The appointment has been created and the time slot has been reserved.
+* `Confirmed`: The appointment has been explicitly confirmed.
+* `Completed`: The appointment has been completed successfully.
+* `Cancelled`: The appointment has been cancelled and is no longer an active booking.
+
+New appointments must start with the `Scheduled` status.
+
+### Valid State Transitions
+
+The following state transitions are allowed:
+
+```text
+Scheduled
+    ├──> Confirmed
+    └──> Cancelled
+
+Confirmed
+    ├──> Completed
+    └──> Cancelled
+
+Completed
+    └──> No further transitions
+
+Cancelled
+    └──> No further transitions
+```
+
+* An appointment cannot transition directly from `Scheduled` to `Completed`.
+* An appointment cannot transition from `Completed` or `Cancelled` back to an active status.
+* Invalid state transitions must be rejected.
+
+### Cancellation Rules
+
+* `Scheduled` appointments can be cancelled.
+* `Confirmed` appointments can be cancelled.
+* `Completed` appointments cannot be cancelled.
+* `Cancelled` appointments cannot be cancelled again.
+* A cancelled appointment is not considered an active booking.
+
+### Rescheduling Rules
+
+* `Scheduled` appointments can be rescheduled.
+* `Confirmed` appointments can be rescheduled.
+* `Completed` appointments cannot be rescheduled.
+* `Cancelled` appointments cannot be rescheduled.
+* Rescheduling must validate the new date and time against staff availability.
+* Rescheduling must validate that the staff member has no conflicting active appointment at the new time.
+* Rescheduling must preserve the appointment's business, customer, service, and assigned staff relationships unless explicitly changed by an allowed operation.
+
 
 ## 8. Authorization Rules
 
@@ -68,3 +127,41 @@
 * `STAFF`: manages assigned services, availability, and relevant appointments.
 * Customers can only access their own permitted customer and appointment data.
 * Guest customers do not receive authenticated access to the business management system.
+
+
+## 9. Timezone Rules
+
+* Each business must define a valid IANA timezone identifier.
+* The business timezone is the source of truth for all scheduling operations.
+* Staff availability is interpreted using the business timezone.
+* Weekly availability rules are evaluated according to the business's local calendar.
+* Exception dates are interpreted according to the business's local calendar.
+* Available appointment slots are calculated using the business timezone.
+* Appointment date and time input is interpreted according to the business timezone when creating or modifying bookings.
+* Appointment timestamps represent absolute points in time and are persisted as UTC values.
+* The API server's local timezone must not affect scheduling behavior.
+* The client's local timezone may be used for presentation purposes but must not change the business scheduling rules.
+* `Appointment.StartTime` and `Appointment.EndTime` use `DateTimeOffset` to represent appointment instants.
+* `Availability.StartTime` and `Availability.EndTime` use local time values because availability represents business calendar rules rather than absolute instants.
+* `Business.Timezone` is stored separately from appointment timestamps because PostgreSQL timestamps do not preserve the business's original timezone identifier.
+
+
+
+## 10. Date and Time Precision Rules
+
+* Scheduling operations use minute-level precision.
+* Appointment start and end times must be aligned to whole minutes.
+* Seconds are not meaningful for appointment scheduling and should be stored as zero.
+* Service duration is expressed in whole minutes.
+* Availability times use minute-level precision.
+* Slot generation operates using minute-level precision.
+
+
+## 11. Slot Generation Rules
+
+* Available appointment slots are generated using a 15-minute base interval.
+* Slot start times must be aligned to the 15-minute interval.
+* The slot interval is independent of the service duration.
+* A slot is considered available only when the complete service duration fits within the staff member's availability.
+* A slot is not available when the resulting appointment would conflict with an existing active appointment.
+* The slot interval is global for the MVP and is not configurable per business.

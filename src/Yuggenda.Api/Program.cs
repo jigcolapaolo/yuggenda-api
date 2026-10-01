@@ -8,8 +8,12 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddOpenApi();
 
 builder.Services.AddInfrastructure(builder.Configuration);
+builder.Services.AddHealthChecks()
+    .AddDbContextCheck<YuggendaDbContext>();
 
 var app = builder.Build();
+
+app.MapHealthChecks("/health");
 
 if (app.Environment.IsDevelopment())
 {
