@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Yuggenda.Application.Abstractions.Authentication;
 using Yuggenda.Application.Abstractions.Persistence;
 using Yuggenda.Infrastructure.Authentication;
+using Yuggenda.Infrastructure.Persistence;
 using Yuggenda.Infrastructure.Persistence.Context;
 using Yuggenda.Infrastructure.Persistence.Repositories;
 
@@ -23,6 +24,7 @@ public static class DependencyInjection
 
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IPasswordHasher, BCryptPasswordHasher>();
+        services.AddScoped<IUnitOfWork, UnitOfWork>();
 
         return services;
     }
