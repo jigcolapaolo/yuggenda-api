@@ -15,7 +15,7 @@ public class User
 
     public ICollection<Customer> Customers { get; private set; }
         = new List<Customer>();
-        
+
     public User(
         string email,
         string passwordHash,
@@ -24,7 +24,7 @@ public class User
     )
     {
         Id = Guid.NewGuid();
-        Email = email;
+        Email = email.Trim().ToLowerInvariant();
         PasswordHash = passwordHash;
         FirstName = firstName;
         LastName = lastName;

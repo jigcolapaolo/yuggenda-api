@@ -1,4 +1,4 @@
-﻿namespace Yuggenda.Application;
+namespace Yuggenda.Application;
 
 public class Class1
 {

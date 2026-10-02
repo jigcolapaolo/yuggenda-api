@@ -1,4 +1,4 @@
-﻿namespace Yuggenda.IntegrationTests;
+namespace Yuggenda.IntegrationTests;
 
 public class UnitTest1
 {
