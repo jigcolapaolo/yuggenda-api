@@ -3,6 +3,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Yuggenda.Application.Abstractions.Authentication;
 using Yuggenda.Application.Abstractions.Persistence;
+using Yuggenda.Domain.Entities;
 using Yuggenda.Infrastructure.Authentication;
 using Yuggenda.Infrastructure.Persistence;
 using Yuggenda.Infrastructure.Persistence.Context;
@@ -25,6 +26,9 @@ public static class DependencyInjection
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IPasswordHasher, BCryptPasswordHasher>();
         services.AddScoped<IUnitOfWork, UnitOfWork>();
+        services.AddScoped<IRefreshTokenGenerator, RefreshTokenGenerator>();
+        services.AddScoped<IRefreshTokenHasher, Sha256RefreshTokenHasher>();
+        services.AddScoped<ISessionRepository, SessionRepository>();
 
         return services;
     }
