@@ -14,6 +14,7 @@ public class YuggendaDbContext : DbContext
     public DbSet<Customer> Customers => Set<Customer>();
     public DbSet<Availability> Availabilities => Set<Availability>();
     public DbSet<Appointment> Appointments => Set<Appointment>();
+    public DbSet<Session> Sessions => Set<Session>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

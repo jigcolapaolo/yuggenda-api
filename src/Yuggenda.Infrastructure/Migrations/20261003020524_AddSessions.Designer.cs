@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Yuggenda.Infrastructure.Persistence.Context;
@@ -11,9 +12,11 @@ using Yuggenda.Infrastructure.Persistence.Context;
 namespace Yuggenda.Infrastructure.Migrations
 {
     [DbContext(typeof(YuggendaDbContext))]
-    partial class YuggendaDbContextModelSnapshot : ModelSnapshot
+    [Migration("20261003020524_AddSessions")]
+    partial class AddSessions
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

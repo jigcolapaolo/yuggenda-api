@@ -16,6 +16,9 @@ public class User
     public ICollection<Customer> Customers { get; private set; }
         = new List<Customer>();
 
+    public ICollection<Session> Sessions { get; private set; }
+        = new List<Session>();
+
     public User(
         string email,
         string passwordHash,
