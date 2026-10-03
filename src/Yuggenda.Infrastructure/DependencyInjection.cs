@@ -29,6 +29,11 @@ public static class DependencyInjection
         services.AddScoped<IRefreshTokenGenerator, RefreshTokenGenerator>();
         services.AddScoped<IRefreshTokenHasher, Sha256RefreshTokenHasher>();
         services.AddScoped<ISessionRepository, SessionRepository>();
+        services.AddScoped<IAccessTokenGenerator, JwtAccessTokenGenerator>();
+
+        services.Configure<JwtOptions>(
+            configuration.GetSection("Jwt")
+        );
 
         return services;
     }
