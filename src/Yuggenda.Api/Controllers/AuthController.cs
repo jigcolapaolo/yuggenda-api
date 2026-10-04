@@ -9,10 +9,15 @@ namespace Yuggenda.Api.Controllers;
 public class AuthController : ControllerBase
 {
     private readonly UserRegistrationService _userRegistrationService;
+    private readonly UserLoginService _userLoginService;
 
-    public AuthController(UserRegistrationService userRegistrationService)
+    public AuthController(
+        UserRegistrationService userRegistrationService,
+        UserLoginService userLoginService
+    )
     {
         _userRegistrationService = userRegistrationService;
+        _userLoginService = userLoginService;
     }
 
     [HttpPost("register")]
@@ -27,5 +32,19 @@ public class AuthController : ControllerBase
         );
 
         return StatusCode(StatusCodes.Status201Created, response);
+    }
+
+    [HttpPost("login")]
+    public async Task<ActionResult<LoginResponse>> Login(
+        LoginRequest request,
+        CancellationToken cancellationToken
+    )
+    {
+        var response = await _userLoginService.LoginAsync(
+            request,
+            cancellationToken
+        );
+
+        return Ok(response);
     }
 }

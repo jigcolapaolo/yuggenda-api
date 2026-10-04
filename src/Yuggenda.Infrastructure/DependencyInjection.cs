@@ -34,6 +34,13 @@ public static class DependencyInjection
         services.Configure<JwtOptions>(
             configuration.GetSection("Jwt")
         );
+        
+        var authenticationOptions = new AuthenticationOptions();
+
+        configuration.GetSection("Authentication")
+            .Bind(authenticationOptions);
+
+        services.AddSingleton(authenticationOptions);
 
         return services;
     }

@@ -33,6 +33,21 @@ public class ExceptionHandlingMiddleware
             await context.Response.WriteAsync(
                 JsonSerializer.Serialize(response));
         }
+        catch (UnauthorizedAccessException exception)
+        {
+            context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+            context.Response.ContentType = "application/json";
+
+            var response = new
+            {
+                title = "Unauthorized",
+                status = StatusCodes.Status401Unauthorized,
+                detail = exception.Message
+            };
+
+            await context.Response.WriteAsync(
+                JsonSerializer.Serialize(response));
+        }
         catch (Exception)
         {
             context.Response.StatusCode = StatusCodes.Status500InternalServerError;
