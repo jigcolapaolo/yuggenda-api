@@ -33,4 +33,27 @@ public class User
         LastName = lastName;
         CreatedAt = DateTime.UtcNow;
     }
+
+    public void UpdateProfile(
+        string? email,
+        string? firstName,
+        string? lastName)
+    {
+        if (email is not null)
+        {
+            Email = email.Trim().ToLowerInvariant();
+        }
+
+        if (firstName is not null)
+        {
+            FirstName = firstName.Trim();
+        }
+
+        if (lastName is not null)
+        {
+            LastName = lastName.Trim();
+        }
+
+        UpdatedAt = DateTime.UtcNow;
+    }
 }

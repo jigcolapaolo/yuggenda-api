@@ -26,4 +26,18 @@ public class UsersController : ControllerBase
 
         return Ok(response);
     }
+
+    [HttpPatch("me")]
+    public async Task<ActionResult<UserResponse>> UpdateMe(
+        UpdateCurrentUserRequest request,
+        CancellationToken cancellationToken
+    )
+    {
+        var response = await _userService.UpdateCurrentUserAsync(
+            request,
+            cancellationToken
+        );
+
+        return Ok(response);
+    }
 }
