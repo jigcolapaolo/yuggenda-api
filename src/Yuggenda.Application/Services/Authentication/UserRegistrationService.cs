@@ -3,6 +3,7 @@ using Yuggenda.Application.Abstractions.Persistence;
 using Yuggenda.Application.DTOs.Authentication;
 using Yuggenda.Domain.Entities;
 using Yuggenda.Application.Exceptions;
+using Yuggenda.Application.DTOs.Users;
 
 namespace Yuggenda.Application.Services.Authentication;
 
@@ -23,7 +24,7 @@ public class UserRegistrationService
         _unitOfWork = unitOfWork;
     }
 
-    public async Task<RegisterUserResponse> RegisterAsync(
+    public async Task<UserResponse> RegisterAsync(
         RegisterUserRequest request,
         CancellationToken cancellationToken
     )
@@ -50,7 +51,7 @@ public class UserRegistrationService
 
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-        return new RegisterUserResponse
+        return new UserResponse
         {
             Id = user.Id,
             Email = user.Email,

@@ -8,6 +8,8 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Yuggenda.Infrastructure.Authentication;
+using Yuggenda.Application.Abstractions.Authentication;
+using Yuggenda.Api.Authentication;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -49,6 +51,10 @@ builder.Services.AddSwaggerGen(options =>
 });
 builder.Services.AddControllers();
 
+builder.Services.AddHttpContextAccessor();
+
+builder.Services.AddScoped<ICurrentUser, CurrentUser>();
+
 builder.Services.AddApplication();
 builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddHealthChecks()
@@ -58,6 +64,8 @@ builder.Services
     .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
+        options.MapInboundClaims = false;
+
         var jwtOptions = new JwtOptions();
 
         builder.Configuration

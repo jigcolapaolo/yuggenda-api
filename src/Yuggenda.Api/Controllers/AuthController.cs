@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Yuggenda.Application.DTOs.Authentication;
+using Yuggenda.Application.DTOs.Users;
 using Yuggenda.Application.Services.Authentication;
-using Microsoft.AspNetCore.Authorization;
 
 namespace Yuggenda.Api.Controllers;
 
@@ -22,7 +22,7 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost("register")]
-    public async Task<ActionResult<RegisterUserResponse>> Register(
+    public async Task<ActionResult<UserResponse>> Register(
         RegisterUserRequest request,
         CancellationToken cancellationToken
     )
