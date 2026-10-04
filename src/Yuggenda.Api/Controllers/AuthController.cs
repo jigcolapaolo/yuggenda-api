@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Yuggenda.Application.DTOs.Authentication;
 using Yuggenda.Application.Services.Authentication;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Yuggenda.Api.Controllers;
 
