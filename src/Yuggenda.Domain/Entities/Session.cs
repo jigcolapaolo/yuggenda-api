@@ -21,4 +21,9 @@ public class Session
         ExpiresAt = expiresAt;
         CreatedAt = DateTime.UtcNow;
     }
+
+    public void Revoke()
+    {
+        RevokedAt = DateTime.UtcNow;
+    }
 }

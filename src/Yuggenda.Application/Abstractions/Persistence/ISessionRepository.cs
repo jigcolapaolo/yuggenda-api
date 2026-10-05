@@ -8,4 +8,8 @@ public interface ISessionRepository
         Session session,
         CancellationToken cancellationToken
     );
+    Task RevokeAllByUserIdAsync(
+        Guid userId,
+        CancellationToken cancellationToken
+    );
 }

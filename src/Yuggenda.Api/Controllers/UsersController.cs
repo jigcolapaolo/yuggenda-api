@@ -40,4 +40,17 @@ public class UsersController : ControllerBase
 
         return Ok(response);
     }
+
+    [HttpPatch("change-password")]
+    public async Task<IActionResult> ChangePassword(
+        ChangePasswordRequest request,
+        CancellationToken cancellationToken)
+    {
+        await _userService.ChangePasswordAsync(
+            request,
+            cancellationToken
+        );
+
+        return NoContent();
+    }
 }

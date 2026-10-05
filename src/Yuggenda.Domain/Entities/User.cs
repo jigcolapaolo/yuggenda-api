@@ -56,4 +56,10 @@ public class User
 
         UpdatedAt = DateTime.UtcNow;
     }
+
+    public void ChangePassword(string passwordHash)
+    {
+        PasswordHash = passwordHash;
+        UpdatedAt = DateTime.UtcNow;
+    }
 }

@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using Yuggenda.Application.Abstractions.Persistence;
 using Yuggenda.Domain.Entities;
 using Yuggenda.Infrastructure.Persistence.Context;
@@ -20,5 +21,20 @@ public class SessionRepository : ISessionRepository
         await _context.Sessions.AddAsync(
             session,
             cancellationToken);
+    }
+
+    public async Task RevokeAllByUserIdAsync(
+        Guid userId,
+        CancellationToken cancellationToken
+    )
+    {
+        var sessions = await _context.Sessions
+            .Where(session => session.UserId == userId)
+            .ToListAsync(cancellationToken);
+
+        foreach (var session in sessions)
+        {
+            session.Revoke();
+        }
     }
 }

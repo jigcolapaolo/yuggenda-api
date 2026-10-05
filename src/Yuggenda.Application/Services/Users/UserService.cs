@@ -10,16 +10,22 @@ public class UserService
     private readonly ICurrentUser _currentUser;
     private readonly IUserRepository _userRepository;
     private readonly IUnitOfWork _unitOfWork;
+    private readonly IPasswordHasher _passwordHasher;
+    private readonly ISessionRepository _sessionRepository;
 
     public UserService(
         ICurrentUser currentUser,
         IUserRepository userRepository,
-        IUnitOfWork unitOfWork
+        IUnitOfWork unitOfWork,
+        IPasswordHasher passwordHasher,
+        ISessionRepository sessionRepository
     )
     {
         _currentUser = currentUser;
         _userRepository = userRepository;
         _unitOfWork = unitOfWork;
+        _passwordHasher = passwordHasher;
+        _sessionRepository = sessionRepository;
     }
 
     public async Task<UserResponse> GetCurrentUserAsync(
@@ -93,5 +99,42 @@ public class UserService
             LastName = user.LastName,
             CreatedAt = user.CreatedAt
         };
+    }
+
+    public async Task ChangePasswordAsync(
+        ChangePasswordRequest request,
+        CancellationToken cancellationToken
+    )
+    {
+        var user = await _userRepository.GetByIdAsync(
+            _currentUser.UserId,
+            cancellationToken
+        );
+
+        if (user is null)
+        {
+            throw new UnauthorizedAccessException("Invalid user identity.");
+        }
+
+        if (!_passwordHasher.Verify(
+            request.CurrentPassword,
+            user.PasswordHash))
+        {
+            throw new UnauthorizedAccessException(
+                "Invalid current password."
+            );
+        }
+
+        var newPasswordHash = _passwordHasher.Hash(
+            request.NewPassword);
+
+        user.ChangePassword(newPasswordHash);
+
+        await _sessionRepository.RevokeAllByUserIdAsync(
+            user.Id,
+            cancellationToken
+        );
+
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
     }
 }
