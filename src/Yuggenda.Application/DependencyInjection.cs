@@ -12,6 +12,7 @@ public static class DependencyInjection
         services.AddScoped<UserRegistrationService>();
         services.AddScoped<UserLoginService>();
         services.AddScoped<UserService>();
+        services.AddScoped<RefreshTokenService>();
 
         return services;
     }

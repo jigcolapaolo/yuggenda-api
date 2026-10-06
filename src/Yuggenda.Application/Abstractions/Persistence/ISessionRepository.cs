@@ -12,4 +12,8 @@ public interface ISessionRepository
         Guid userId,
         CancellationToken cancellationToken
     );
+    Task<Session?> GetByRefreshTokenHashAsync(
+        string refreshTokenHash,
+        CancellationToken cancellationToken
+    );
 }

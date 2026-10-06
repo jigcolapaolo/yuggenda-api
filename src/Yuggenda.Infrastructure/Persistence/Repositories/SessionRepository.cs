@@ -37,4 +37,16 @@ public class SessionRepository : ISessionRepository
             session.Revoke();
         }
     }
+
+    public async Task<Session?> GetByRefreshTokenHashAsync(
+        string refreshTokenHash,
+        CancellationToken cancellationToken
+    )
+    {
+        return await _context.Sessions
+            .FirstOrDefaultAsync(
+                session => session.RefreshTokenHash == refreshTokenHash,
+                cancellationToken
+            );
+    }
 }

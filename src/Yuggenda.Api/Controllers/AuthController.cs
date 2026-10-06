@@ -11,14 +11,17 @@ public class AuthController : ControllerBase
 {
     private readonly UserRegistrationService _userRegistrationService;
     private readonly UserLoginService _userLoginService;
+    private readonly RefreshTokenService _refreshTokenService;
 
     public AuthController(
         UserRegistrationService userRegistrationService,
-        UserLoginService userLoginService
+        UserLoginService userLoginService,
+        RefreshTokenService refreshTokenService
     )
     {
         _userRegistrationService = userRegistrationService;
         _userLoginService = userLoginService;
+        _refreshTokenService = refreshTokenService;
     }
 
     [HttpPost("register")]
@@ -45,6 +48,17 @@ public class AuthController : ControllerBase
             request,
             cancellationToken
         );
+
+        return Ok(response);
+    }
+
+    [HttpPost("refresh")]
+    public async Task<ActionResult<LoginResponse>> Refresh(
+        RefreshTokenRequest request,
+        CancellationToken cancellationToken
+    )
+    {
+        var response = await _refreshTokenService.RefreshAsync(request, cancellationToken);
 
         return Ok(response);
     }
