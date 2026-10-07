@@ -86,4 +86,28 @@ public class RefreshTokenService
             LastName = user.LastName
         };
     }
+
+    public async Task LogoutAsync(
+        Guid userId,
+        LogoutRequest request,
+        CancellationToken cancellationToken
+    )
+    {
+        var refreshTokenHash = _refreshTokenHasher.Hash(request.RefreshToken);
+
+        var session = await _sessionRepository
+            .GetByRefreshTokenHashAsync(refreshTokenHash, cancellationToken);
+
+        if (session is null ||
+            session.UserId != userId ||
+            session.RevokedAt is not null
+        )
+        {
+            throw new UnauthorizedAccessException("Invalid refresh token.");
+        }
+
+        session.Revoke();
+
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
+    }
 }

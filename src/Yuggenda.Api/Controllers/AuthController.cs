@@ -1,4 +1,6 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Yuggenda.Application.Abstractions.Authentication;
 using Yuggenda.Application.DTOs.Authentication;
 using Yuggenda.Application.DTOs.Users;
 using Yuggenda.Application.Services.Authentication;
@@ -12,16 +14,19 @@ public class AuthController : ControllerBase
     private readonly UserRegistrationService _userRegistrationService;
     private readonly UserLoginService _userLoginService;
     private readonly RefreshTokenService _refreshTokenService;
+    private readonly ICurrentUser _currentUser;
 
     public AuthController(
         UserRegistrationService userRegistrationService,
         UserLoginService userLoginService,
-        RefreshTokenService refreshTokenService
+        RefreshTokenService refreshTokenService,
+        ICurrentUser currentUser
     )
     {
         _userRegistrationService = userRegistrationService;
         _userLoginService = userLoginService;
         _refreshTokenService = refreshTokenService;
+        _currentUser = currentUser;
     }
 
     [HttpPost("register")]
@@ -61,5 +66,14 @@ public class AuthController : ControllerBase
         var response = await _refreshTokenService.RefreshAsync(request, cancellationToken);
 
         return Ok(response);
+    }
+
+    [Authorize]
+    [HttpPost("logout")]
+    public async Task<IActionResult> Logout(LogoutRequest request, CancellationToken cancellationToken)
+    {
+        await _refreshTokenService.LogoutAsync(_currentUser.UserId, request, cancellationToken);
+
+        return NoContent();
     }
 }
