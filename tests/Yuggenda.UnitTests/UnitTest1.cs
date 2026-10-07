@@ -1,4 +1,4 @@
-﻿namespace Yuggenda.UnitTests;
+namespace Yuggenda.UnitTests;
 
 public class UnitTest1
 {

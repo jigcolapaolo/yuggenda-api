@@ -280,6 +280,37 @@ namespace Yuggenda.Infrastructure.Migrations
                     b.ToTable("Services");
                 });
 
+            modelBuilder.Entity("Yuggenda.Domain.Entities.Session", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("ExpiresAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("RefreshTokenHash")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("RevokedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ExpiresAt");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Sessions");
+                });
+
             modelBuilder.Entity("Yuggenda.Domain.Entities.User", b =>
                 {
                     b.Property<Guid>("Id")
@@ -428,6 +459,17 @@ namespace Yuggenda.Infrastructure.Migrations
                     b.Navigation("Business");
                 });
 
+            modelBuilder.Entity("Yuggenda.Domain.Entities.Session", b =>
+                {
+                    b.HasOne("Yuggenda.Domain.Entities.User", "User")
+                        .WithMany("Sessions")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Yuggenda.Domain.Entities.Business", b =>
                 {
                     b.Navigation("Appointments");
@@ -461,6 +503,8 @@ namespace Yuggenda.Infrastructure.Migrations
                     b.Navigation("BusinessMemberships");
 
                     b.Navigation("Customers");
+
+                    b.Navigation("Sessions");
                 });
 #pragma warning restore 612, 618
         }

@@ -15,7 +15,10 @@ public class User
 
     public ICollection<Customer> Customers { get; private set; }
         = new List<Customer>();
-        
+
+    public ICollection<Session> Sessions { get; private set; }
+        = new List<Session>();
+
     public User(
         string email,
         string passwordHash,
@@ -24,10 +27,39 @@ public class User
     )
     {
         Id = Guid.NewGuid();
-        Email = email;
+        Email = email.Trim().ToLowerInvariant();
         PasswordHash = passwordHash;
         FirstName = firstName;
         LastName = lastName;
         CreatedAt = DateTime.UtcNow;
+    }
+
+    public void UpdateProfile(
+        string? email,
+        string? firstName,
+        string? lastName)
+    {
+        if (email is not null)
+        {
+            Email = email.Trim().ToLowerInvariant();
+        }
+
+        if (firstName is not null)
+        {
+            FirstName = firstName.Trim();
+        }
+
+        if (lastName is not null)
+        {
+            LastName = lastName.Trim();
+        }
+
+        UpdatedAt = DateTime.UtcNow;
+    }
+
+    public void ChangePassword(string passwordHash)
+    {
+        PasswordHash = passwordHash;
+        UpdatedAt = DateTime.UtcNow;
     }
 }
