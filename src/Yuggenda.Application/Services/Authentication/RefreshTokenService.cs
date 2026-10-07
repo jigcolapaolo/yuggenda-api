@@ -110,4 +110,14 @@ public class RefreshTokenService
 
         await _unitOfWork.SaveChangesAsync(cancellationToken);
     }
+
+    public async Task LogoutAllAsync(
+        Guid userId,
+        CancellationToken cancellationToken
+    )
+    {
+        await _sessionRepository.RevokeAllByUserIdAsync(userId, cancellationToken);
+
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
+    }
 }

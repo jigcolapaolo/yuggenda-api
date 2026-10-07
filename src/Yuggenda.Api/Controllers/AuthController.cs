@@ -76,4 +76,13 @@ public class AuthController : ControllerBase
 
         return NoContent();
     }
+
+    [Authorize]
+    [HttpPost("logout-all")]
+    public async Task<IActionResult> LogoutAll(CancellationToken cancellationToken)
+    {
+        await _refreshTokenService.LogoutAllAsync(_currentUser.UserId, cancellationToken);
+
+        return NoContent();
+    }
 }
