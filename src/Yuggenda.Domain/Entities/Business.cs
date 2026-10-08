@@ -31,11 +31,55 @@ public class Business
         string? phone = null
     )
     {
+        name = name.Trim();
+        timezone = timezone.Trim();
+
+        if (string.IsNullOrWhiteSpace(name))
+        {
+            throw new ArgumentException(
+                "Business name is required.",
+                nameof(name)
+            );
+        }
+
+        if (string.IsNullOrWhiteSpace(timezone))
+        {
+            throw new ArgumentException(
+                "Business timezone is required.",
+                nameof(timezone)
+            );
+        }
+
+        try
+        {
+            TimeZoneInfo.FindSystemTimeZoneById(timezone);
+        }
+        catch (TimeZoneNotFoundException)
+        {
+            throw new ArgumentException(
+                "Business timezone is invalid.",
+                nameof(timezone)
+            );
+        }
+        catch (InvalidTimeZoneException)
+        {
+            throw new ArgumentException(
+                "Business timezone is invalid.",
+                nameof(timezone)
+            );
+        }
+
         Id = Guid.NewGuid();
         Name = name;
-        Description = description;
-        Email = email;
-        Phone = phone;
+        Description = string.IsNullOrWhiteSpace(description)
+            ? null
+            : description.Trim();
+        Email = string.IsNullOrWhiteSpace(email)
+            ? null
+            : email.Trim().ToLowerInvariant();
+        Phone = string.IsNullOrWhiteSpace(phone)
+            ? null
+            : phone.Trim();
         Timezone = timezone;
         CreatedAt = DateTime.UtcNow;
     }

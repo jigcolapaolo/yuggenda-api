@@ -31,6 +31,9 @@ public static class DependencyInjection
         services.AddScoped<ISessionRepository, SessionRepository>();
         services.AddScoped<IAccessTokenGenerator, JwtAccessTokenGenerator>();
 
+        services.AddScoped<IBusinessRepository, BusinessRepository>();
+        services.AddScoped<IBusinessMemberRepository, BusinessMemberRepository>();
+
         services.Configure<JwtOptions>(
             configuration.GetSection("Jwt")
         );
