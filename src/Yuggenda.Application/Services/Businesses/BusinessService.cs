@@ -86,4 +86,23 @@ public class BusinessService
             UpdatedAt = business.UpdatedAt
         };
     }
+
+    public async Task<List<BusinessResponse>> GetAllAsync(
+        CancellationToken cancellationToken
+    )
+    {
+        var businesses = await _businessRepository.GetAllAsync(cancellationToken);
+
+        return businesses.Select(business => new BusinessResponse
+        {
+            Id = business.Id,
+            Name = business.Name,
+            Description = business.Description,
+            Email = business.Email,
+            Phone = business.Phone,
+            Timezone = business.Timezone,
+            CreatedAt = business.CreatedAt,
+            UpdatedAt = business.UpdatedAt
+        }).ToList();
+    }
 }

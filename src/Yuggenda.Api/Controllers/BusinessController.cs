@@ -42,4 +42,14 @@ public class BusinessesController : ControllerBase
 
         return Ok(response);
     }
+
+    [HttpGet]
+    public async Task<ActionResult<List<BusinessResponse>>> GetAll(
+        CancellationToken cancellationToken
+    )
+    {
+        var response = await _businessService.GetAllAsync(cancellationToken);
+
+        return Ok(response);
+    }
 }
