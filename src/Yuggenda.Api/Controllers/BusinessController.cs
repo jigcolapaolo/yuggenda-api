@@ -35,8 +35,11 @@ public class BusinessesController : ControllerBase
     [HttpGet("{id:guid}")]
     public async Task<ActionResult<BusinessResponse>> GetById(
         Guid id,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken
+    )
     {
-        throw new NotImplementedException();
+        var response = await _businessService.GetByIdAsync(id, cancellationToken);
+
+        return Ok(response);
     }
 }

@@ -61,4 +61,29 @@ public class BusinessService
             UpdatedAt = business.UpdatedAt
         };
     }
+
+    public async Task<BusinessResponse> GetByIdAsync(
+        Guid id,
+        CancellationToken cancellationToken
+    )
+    {
+        var business = await _businessRepository.GetByIdAsync(id, cancellationToken);
+
+        if (business is null)
+        {
+            throw new KeyNotFoundException("Business not found");
+        }
+
+        return new BusinessResponse
+        {
+            Id = business.Id,
+            Name = business.Name,
+            Description = business.Description,
+            Email = business.Email,
+            Phone = business.Phone,
+            Timezone = business.Timezone,
+            CreatedAt = business.CreatedAt,
+            UpdatedAt = business.UpdatedAt
+        };
+    }
 }
