@@ -52,4 +52,15 @@ public class BusinessesController : ControllerBase
 
         return Ok(response);
     }
+
+    [HttpGet("mine")]
+    [Authorize]
+    public async Task<ActionResult<List<BusinessResponse>>> GetMine(
+        CancellationToken cancellationToken
+    )
+    {
+        var response = await _businessService.GetMineAsync(cancellationToken);
+
+        return Ok(response);
+    }
 }

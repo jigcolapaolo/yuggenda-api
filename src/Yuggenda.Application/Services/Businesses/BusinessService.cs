@@ -105,4 +105,24 @@ public class BusinessService
             UpdatedAt = business.UpdatedAt
         }).ToList();
     }
+
+    public async Task<List<BusinessResponse>> GetMineAsync(CancellationToken cancellationToken)
+    {
+        var businesses = await _businessRepository.GetByUserIdAsync(
+            _currentUser.UserId,
+            cancellationToken
+        );
+
+        return businesses.Select(business => new BusinessResponse
+        {
+            Id = business.Id,
+            Name = business.Name,
+            Description = business.Description,
+            Email = business.Email,
+            Phone = business.Phone,
+            Timezone = business.Timezone,
+            CreatedAt = business.CreatedAt,
+            UpdatedAt = business.UpdatedAt
+        }).ToList();
+    }
 }
