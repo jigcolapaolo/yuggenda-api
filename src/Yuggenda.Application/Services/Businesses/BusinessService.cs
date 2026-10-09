@@ -125,4 +125,40 @@ public class BusinessService
             UpdatedAt = business.UpdatedAt
         }).ToList();
     }
+
+    public async Task<BusinessResponse> UpdateAsync(
+        Guid id,
+        UpdateBusinessRequest request,
+        CancellationToken cancellationToken
+    )
+    {
+        var business = await _businessRepository.GetByIdAsync(id, cancellationToken);
+
+        if (business is null)
+        {
+            throw new KeyNotFoundException("Business not found");
+        }
+
+        business.Update(
+            name: request.Name ?? business.Name,
+            description: request.Description ?? business.Description,
+            email: request.Email ?? business.Email,
+            phone: request.Phone ?? business.Phone,
+            timezone: request.Timezone ?? business.Timezone
+        );
+
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+        return new BusinessResponse
+        {
+            Id = business.Id,
+            Name = business.Name,
+            Description = business.Description,
+            Email = business.Email,
+            Phone = business.Phone,
+            Timezone = business.Timezone,
+            CreatedAt = business.CreatedAt,
+            UpdatedAt = business.UpdatedAt
+        };
+    }
 }

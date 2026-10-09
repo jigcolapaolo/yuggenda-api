@@ -63,4 +63,17 @@ public class BusinessesController : ControllerBase
 
         return Ok(response);
     }
+
+    [HttpPatch("{id:guid}")]
+    [Authorize]
+    public async Task<ActionResult<BusinessResponse>> Update(
+        Guid id,
+        UpdateBusinessRequest request,
+        CancellationToken cancellationToken
+    )
+    {
+        var response = await _businessService.UpdateAsync(id, request, cancellationToken);
+
+        return Ok(response);
+    }
 }

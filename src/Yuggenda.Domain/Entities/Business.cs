@@ -83,4 +83,56 @@ public class Business
         Timezone = timezone;
         CreatedAt = DateTime.UtcNow;
     }
+
+    
+    public void Update(
+        string name,
+        string? description,
+        string? email,
+        string? phone,
+        string timezone)
+    {
+        name = name.Trim();
+        timezone = timezone.Trim();
+
+        if (string.IsNullOrWhiteSpace(name))
+        {
+            throw new ArgumentException("Business name is required.", nameof(name));
+        }
+
+        if (string.IsNullOrWhiteSpace(timezone))
+        {
+            throw new ArgumentException("Business timezone is required.", nameof(timezone));
+        }
+
+        try
+        {
+            TimeZoneInfo.FindSystemTimeZoneById(timezone);
+        }
+        catch (TimeZoneNotFoundException)
+        {
+            throw new ArgumentException("Business timezone is invalid.", nameof(timezone));
+        }
+        catch (InvalidTimeZoneException)
+        {
+            throw new ArgumentException("Business timezone is invalid.", nameof(timezone));
+        }
+
+        Name = name;
+
+        Description = string.IsNullOrWhiteSpace(description)
+            ? null
+            : description.Trim();
+
+        Email = string.IsNullOrWhiteSpace(email)
+            ? null
+            : email.Trim().ToLowerInvariant();
+
+        Phone = string.IsNullOrWhiteSpace(phone)
+            ? null
+            : phone.Trim();
+
+        Timezone = timezone;
+        UpdatedAt = DateTime.UtcNow;
+    }
 }
