@@ -10,6 +10,9 @@ using System.Text;
 using Yuggenda.Infrastructure.Authentication;
 using Yuggenda.Application.Abstractions.Authentication;
 using Yuggenda.Api.Authentication;
+using Yuggenda.Api.Authorization;
+using Microsoft.AspNetCore.Authorization;
+using Yuggenda.Domain.Enums;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -89,7 +92,21 @@ builder.Services
         };
     });
 
-builder.Services.AddAuthorization();
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy(BusinessPolicies.Update, policy =>
+    {
+        policy.RequireAuthenticatedUser();
+
+        policy.AddRequirements(
+            new BusinessPermissionRequirement(
+                BusinessRole.Owner,
+                BusinessRole.Admin)
+            );
+    });
+});
+
+builder.Services.AddScoped<IAuthorizationHandler, BusinessPermissionHandler>();
 
 var app = builder.Build();
 

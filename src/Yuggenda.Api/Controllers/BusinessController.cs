@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Yuggenda.Api.Authorization;
 using Yuggenda.Application.DTOs.Businesses;
 using Yuggenda.Application.Services.Businesses;
 
@@ -65,7 +66,7 @@ public class BusinessesController : ControllerBase
     }
 
     [HttpPatch("{id:guid}")]
-    [Authorize]
+    [Authorize(Policy = BusinessPolicies.Update)]
     public async Task<ActionResult<BusinessResponse>> Update(
         Guid id,
         UpdateBusinessRequest request,
