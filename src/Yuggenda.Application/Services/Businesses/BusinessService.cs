@@ -161,4 +161,16 @@ public class BusinessService
             UpdatedAt = business.UpdatedAt
         };
     }
+
+    public async Task DeleteAsync(Guid id, CancellationToken cancellationToken)
+    {
+        var business = await _businessRepository.GetByIdAsync(id, cancellationToken);
+
+        if (business is null)
+            throw new KeyNotFoundException("Business not found.");
+
+        await _businessRepository.DeleteAsync(business, cancellationToken);
+
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
+    }
 }

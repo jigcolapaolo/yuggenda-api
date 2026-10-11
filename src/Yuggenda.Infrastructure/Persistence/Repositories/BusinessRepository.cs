@@ -49,4 +49,13 @@ public class BusinessRepository : IBusinessRepository
         return await _context.Businesses
             .ToListAsync(cancellationToken);
     }
+
+    public Task DeleteAsync(Business business, CancellationToken cancellationToken)
+    {
+        cancellationToken.ThrowIfCancellationRequested();
+
+        _context.Businesses.Remove(business);
+
+        return Task.CompletedTask;
+    }
 }

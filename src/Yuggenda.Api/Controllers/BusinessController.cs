@@ -77,4 +77,13 @@ public class BusinessesController : ControllerBase
 
         return Ok(response);
     }
+
+    [HttpDelete("{id:guid}")]
+    [Authorize(Policy = BusinessPolicies.Delete)]
+    public async Task<ActionResult> Delete(Guid id, CancellationToken cancellationToken)
+    {
+        await _businessService.DeleteAsync(id, cancellationToken);
+
+        return NoContent();
+    }
 }

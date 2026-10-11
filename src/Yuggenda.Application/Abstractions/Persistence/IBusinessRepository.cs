@@ -8,4 +8,5 @@ public interface IBusinessRepository
     Task<List<Business>> GetByUserIdAsync(Guid userId, CancellationToken cancellationToken);
     Task<Business?> GetByIdAsync(Guid userId, CancellationToken cancellationToken);
     Task<List<Business>> GetAllAsync(CancellationToken cancellationToken);
+    Task DeleteAsync(Business business, CancellationToken cancellationToken);
 }

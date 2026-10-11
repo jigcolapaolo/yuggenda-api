@@ -104,6 +104,16 @@ builder.Services.AddAuthorization(options =>
                 BusinessRole.Admin)
             );
     });
+
+    options.AddPolicy(BusinessPolicies.Delete, policy =>
+    {
+        policy.RequireAuthenticatedUser();
+        policy.AddRequirements(
+            new BusinessPermissionRequirement(
+                BusinessRole.Owner
+            )
+        );
+    });
 });
 
 builder.Services.AddScoped<IAuthorizationHandler, BusinessPermissionHandler>();
