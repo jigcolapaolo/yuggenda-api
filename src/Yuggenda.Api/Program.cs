@@ -92,41 +92,7 @@ builder.Services
         };
     });
 
-builder.Services.AddAuthorization(options =>
-{
-    options.AddPolicy(BusinessPolicies.Update, policy =>
-    {
-        policy.RequireAuthenticatedUser();
-
-        policy.AddRequirements(
-            new BusinessPermissionRequirement(
-                BusinessRole.Owner,
-                BusinessRole.Admin)
-            );
-    });
-
-    options.AddPolicy(BusinessPolicies.Delete, policy =>
-    {
-        policy.RequireAuthenticatedUser();
-        policy.AddRequirements(
-            new BusinessPermissionRequirement(
-                BusinessRole.Owner
-            )
-        );
-    });
-
-    options.AddPolicy(BusinessPolicies.ReadMembers, policy =>
-    {
-        policy.RequireAuthenticatedUser();
-        policy.AddRequirements(
-            new BusinessPermissionRequirement(
-                BusinessRole.Owner,
-                BusinessRole.Admin,
-                BusinessRole.Staff
-            )
-        );
-    });
-});
+builder.Services.AddYuggendaAuthorization();
 
 builder.Services.AddScoped<IAuthorizationHandler, BusinessPermissionHandler>();
 
