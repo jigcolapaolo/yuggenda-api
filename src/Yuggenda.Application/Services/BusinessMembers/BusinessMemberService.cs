@@ -99,4 +99,50 @@ public class BusinessMemberService
             CreatedAt = member.CreatedAt
         };
     }
+
+    public async Task<BusinessMemberResponse> UpdateRoleAsync(
+        Guid businessId,
+        Guid memberId,
+        UpdateBusinessMemberRoleRequest request,
+        CancellationToken cancellationToken
+    )
+    {
+        if (!Enum.IsDefined(request.Role))
+        {
+            throw new ArgumentException("Invalid business member role.");
+        }
+
+        if (request.Role == BusinessRole.Owner)
+        {
+            throw new ArgumentException(
+                "The Owner role cannot be assigned through this endpoint."
+            );
+        }
+
+        var member = await _businessMemberRepository.GetByIdAsync(
+            memberId,
+            cancellationToken
+        );
+
+        if (member is null || member.BusinessId != businessId)
+        {
+            throw new KeyNotFoundException("Business member not found.");
+        }
+
+        member.ChangeRole(request.Role);
+
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+        return new BusinessMemberResponse
+        {
+            Id = member.Id,
+            BusinessId = member.BusinessId,
+            UserId = member.UserId,
+            FirstName = member.User.FirstName,
+            LastName = member.User.LastName,
+            Email = member.User.Email,
+            Role = member.Role.ToString(),
+            CreatedAt = member.CreatedAt
+        };
+    }
 }

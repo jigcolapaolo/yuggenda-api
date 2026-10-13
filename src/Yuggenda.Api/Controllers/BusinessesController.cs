@@ -130,4 +130,23 @@ public class BusinessesController : ControllerBase
             response
         );
     }
+
+    [HttpPatch("{businessId:guid}/members/{memberId:guid}")]
+    [Authorize(Policy = BusinessPolicies.UpdateMemberRole)]
+    public async Task<ActionResult<BusinessMemberResponse>> UpdateMemberRole(
+        Guid businessId,
+        Guid memberId,
+        [FromBody] UpdateBusinessMemberRoleRequest request,
+        CancellationToken cancellationToken
+    )
+    {
+        var response = await _businessMemberService.UpdateRoleAsync(
+            businessId,
+            memberId,
+            request,
+            cancellationToken
+        );
+
+        return Ok(response);
+    }
 }

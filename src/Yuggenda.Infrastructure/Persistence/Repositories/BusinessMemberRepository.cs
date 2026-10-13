@@ -39,6 +39,7 @@ public class BusinessMemberRepository : IBusinessMemberRepository
     )
     {
         return await _context.BusinessMembers
+            .Include(member => member.User)
             .FirstOrDefaultAsync(
                 member => member.Id == id,
                 cancellationToken);
