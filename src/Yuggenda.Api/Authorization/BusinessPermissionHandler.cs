@@ -25,13 +25,16 @@ public sealed class BusinessPermissionHandler(
         if (httpContext is null)
             return;
 
-        if (!Guid.TryParse(
-                httpContext.Request.RouteValues["id"]?.ToString(),
-                out var businessId)
-            )
+
+        var businessIdValue =
+            httpContext.Request.RouteValues["businessId"]?.ToString()
+            ?? httpContext.Request.RouteValues["id"]?.ToString();
+
+        if (!Guid.TryParse(businessIdValue, out var businessId))
         {
             return;
         }
+
 
         var member =
             await businessMemberRepository.GetByBusinessAndUserIdAsync(

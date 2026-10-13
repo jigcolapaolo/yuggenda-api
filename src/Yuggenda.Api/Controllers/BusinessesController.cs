@@ -2,7 +2,10 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Yuggenda.Api.Authorization;
 using Yuggenda.Application.DTOs.Businesses;
+using Yuggenda.Application.DTOs.BusinessMembers;
 using Yuggenda.Application.Services.Businesses;
+using Yuggenda.Application.Services.BusinessMembers;
+using Yuggenda.Domain.Entities;
 
 namespace Yuggenda.Api.Controllers;
 
@@ -11,10 +14,15 @@ namespace Yuggenda.Api.Controllers;
 public class BusinessesController : ControllerBase
 {
     private readonly BusinessService _businessService;
+    private readonly BusinessMemberService _businessMemberService;
 
-    public BusinessesController(BusinessService businessService)
+    public BusinessesController(
+        BusinessService businessService,
+        BusinessMemberService businessMemberService
+    )
     {
         _businessService = businessService;
+        _businessMemberService = businessMemberService;
     }
 
     [HttpPost]
@@ -85,5 +93,20 @@ public class BusinessesController : ControllerBase
         await _businessService.DeleteAsync(id, cancellationToken);
 
         return NoContent();
+    }
+
+    [HttpGet("{businessId:guid}/members")]
+    [Authorize(Policy = BusinessPolicies.ReadMembers)]
+    public async Task<ActionResult<List<BusinessMemberResponse>>> GetMembers(
+        Guid businessId,
+        CancellationToken cancellationToken
+    )
+    {
+        var response = await _businessMemberService.GetByBusinessIdAsync(
+            businessId,
+            cancellationToken
+        );
+
+        return Ok(response);
     }
 }

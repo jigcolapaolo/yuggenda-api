@@ -114,6 +114,18 @@ builder.Services.AddAuthorization(options =>
             )
         );
     });
+
+    options.AddPolicy(BusinessPolicies.ReadMembers, policy =>
+    {
+        policy.RequireAuthenticatedUser();
+        policy.AddRequirements(
+            new BusinessPermissionRequirement(
+                BusinessRole.Owner,
+                BusinessRole.Admin,
+                BusinessRole.Staff
+            )
+        );
+    });
 });
 
 builder.Services.AddScoped<IAuthorizationHandler, BusinessPermissionHandler>();
