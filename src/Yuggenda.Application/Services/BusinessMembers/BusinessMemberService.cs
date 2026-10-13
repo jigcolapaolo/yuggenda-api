@@ -29,6 +29,9 @@ public class BusinessMemberService
             Id = member.Id,
             BusinessId = member.BusinessId,
             UserId = member.UserId,
+            FirstName = member.User.FirstName,
+            LastName = member.User.LastName,
+            Email = member.User.Email,
             Role = member.Role.ToString(),
             CreatedAt = member.CreatedAt
         }).ToList();

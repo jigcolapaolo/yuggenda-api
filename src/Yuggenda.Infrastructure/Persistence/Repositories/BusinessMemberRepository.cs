@@ -29,6 +29,7 @@ public class BusinessMemberRepository : IBusinessMemberRepository
     {
         return await _context.BusinessMembers
             .Where(member => member.BusinessId == businessId)
+            .Include(member => member.User)
             .ToListAsync(cancellationToken);
     }
 
