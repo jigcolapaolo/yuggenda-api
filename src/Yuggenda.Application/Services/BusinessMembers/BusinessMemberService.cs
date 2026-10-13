@@ -1,17 +1,26 @@
 using Yuggenda.Application.Abstractions.Persistence;
 using Yuggenda.Application.DTOs.BusinessMembers;
+using Yuggenda.Application.Exceptions;
+using Yuggenda.Domain.Entities;
+using Yuggenda.Domain.Enums;
 
 namespace Yuggenda.Application.Services.BusinessMembers;
 
 public class BusinessMemberService
 {
     private readonly IBusinessMemberRepository _businessMemberRepository;
+    private readonly IUserRepository _userRepository;
+    private readonly IUnitOfWork _unitOfWork;
 
     public BusinessMemberService(
-        IBusinessMemberRepository businessMemberRepository
+        IBusinessMemberRepository businessMemberRepository,
+        IUserRepository userRepository,
+        IUnitOfWork unitOfWork
     )
     {
         _businessMemberRepository = businessMemberRepository;
+        _userRepository = userRepository;
+        _unitOfWork = unitOfWork;
     }
 
     public async Task<List<BusinessMemberResponse>> GetByBusinessIdAsync(
@@ -35,5 +44,59 @@ public class BusinessMemberService
             Role = member.Role.ToString(),
             CreatedAt = member.CreatedAt
         }).ToList();
+    }
+
+    public async Task<BusinessMemberResponse> AddAsync(
+        Guid businessId,
+        AddBusinessMemberRequest request,
+        CancellationToken cancellationToken
+    )
+    {
+        if (request.UserId == Guid.Empty)
+        {
+            throw new ArgumentException("UserId must not be empty.");
+        }
+
+        var user = await _userRepository.GetByIdAsync(request.UserId, cancellationToken);
+
+        if (user is null)
+        {
+            throw new KeyNotFoundException("User not found,");
+        }
+
+        var existingMember = await _businessMemberRepository.GetByBusinessAndUserIdAsync(
+            businessId,
+            request.UserId,
+            cancellationToken
+        );
+
+        if (existingMember is not null)
+        {
+            throw new ConflictException(
+                "The user is already a member of this business"
+            );
+        }
+
+        var member = new BusinessMember(
+            businessId,
+            request.UserId,
+            BusinessRole.Staff
+        );
+
+        await _businessMemberRepository.AddAsync(member, cancellationToken);
+
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+        return new BusinessMemberResponse
+        {
+            Id = member.Id,
+            BusinessId = member.BusinessId,
+            UserId = member.UserId,
+            FirstName = user.FirstName,
+            LastName = user.LastName,
+            Email = user.Email,
+            Role = member.Role.ToString(),
+            CreatedAt = member.CreatedAt
+        };
     }
 }

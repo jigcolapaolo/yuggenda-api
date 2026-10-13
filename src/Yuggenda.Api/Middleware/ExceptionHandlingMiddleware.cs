@@ -18,6 +18,22 @@ public class ExceptionHandlingMiddleware
         {
             await _next(context);
         }
+        catch (KeyNotFoundException exception)
+        {
+            context.Response.StatusCode = StatusCodes.Status404NotFound;
+            context.Response.ContentType = "application/json";
+
+            var response = new
+            {
+                title = "Not Found",
+                status = StatusCodes.Status404NotFound,
+                detail = exception.Message
+            };
+
+            await context.Response.WriteAsync(
+                JsonSerializer.Serialize(response));
+
+        }
         catch (ConflictException exception)
         {
             context.Response.StatusCode = StatusCodes.Status409Conflict;

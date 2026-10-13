@@ -109,4 +109,25 @@ public class BusinessesController : ControllerBase
 
         return Ok(response);
     }
+
+    [HttpPost("{businessId:guid}/members")]
+    [Authorize(Policy = BusinessPolicies.AddMembers)]
+    public async Task<ActionResult<BusinessMemberResponse>> AddMember(
+        Guid businessId,
+        AddBusinessMemberRequest request,
+        CancellationToken cancellationToken
+    )
+    {
+        var response = await _businessMemberService.AddAsync(
+            businessId,
+            request,
+            cancellationToken
+        );
+
+        return CreatedAtAction(
+            nameof(GetMembers),
+            new { businessId },
+            response
+        );
+    }
 }

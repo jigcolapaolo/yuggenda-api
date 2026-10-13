@@ -44,6 +44,17 @@ public static class AuthorizationServiceExtensions
                     )
                 );
             });
+
+            options.AddPolicy(BusinessPolicies.AddMembers, policy =>
+            {
+                policy.RequireAuthenticatedUser();
+                policy.AddRequirements(
+                    new BusinessPermissionRequirement(
+                        BusinessRole.Owner,
+                        BusinessRole.Admin
+                    )
+                );
+            });
         });
 
         return services;
