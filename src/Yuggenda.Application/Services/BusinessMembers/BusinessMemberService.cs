@@ -1,3 +1,4 @@
+using Yuggenda.Application.Abstractions.Authentication;
 using Yuggenda.Application.Abstractions.Persistence;
 using Yuggenda.Application.DTOs.BusinessMembers;
 using Yuggenda.Application.Exceptions;
@@ -11,16 +12,19 @@ public class BusinessMemberService
     private readonly IBusinessMemberRepository _businessMemberRepository;
     private readonly IUserRepository _userRepository;
     private readonly IUnitOfWork _unitOfWork;
+    private readonly ICurrentUser _currentUser;
 
     public BusinessMemberService(
         IBusinessMemberRepository businessMemberRepository,
         IUserRepository userRepository,
-        IUnitOfWork unitOfWork
+        IUnitOfWork unitOfWork,
+        ICurrentUser currentUser
     )
     {
         _businessMemberRepository = businessMemberRepository;
         _userRepository = userRepository;
         _unitOfWork = unitOfWork;
+        _currentUser = currentUser;
     }
 
     public async Task<List<BusinessMemberResponse>> GetByBusinessIdAsync(
@@ -166,6 +170,38 @@ public class BusinessMemberService
         {
             throw new ConflictException(
                 "The business owner cannot be removed"
+            );
+        }
+
+        await _businessMemberRepository.RemoveAsync(member, cancellationToken);
+
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
+    }
+
+    public async Task LeaveAsync(
+        Guid businessId,
+        CancellationToken cancellationToken
+    )
+    {
+        var userId = _currentUser.UserId;
+
+        var member = await _businessMemberRepository.GetByBusinessAndUserIdAsync(
+            businessId,
+            userId,
+            cancellationToken
+        );
+
+        if (member is null)
+        {
+            throw new KeyNotFoundException(
+                "You are not a member of this business"
+            );
+        }
+
+        if (member.Role == BusinessRole.Owner)
+        {
+            throw new ConflictException(
+                "The business owner must transfer ownership before leaving"
             );
         }
 

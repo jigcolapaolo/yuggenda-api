@@ -166,4 +166,16 @@ public class BusinessesController : ControllerBase
 
         return NoContent();
     }
+
+    [HttpDelete("{businessId:guid}/members/me")]
+    [Authorize]
+    public async Task<IActionResult> LeaveBusiness(
+        Guid businessId,
+        CancellationToken cancellationToken
+    )
+    {
+        await _businessMemberService.LeaveAsync(businessId, cancellationToken);
+
+        return NoContent();
+    }
 }
