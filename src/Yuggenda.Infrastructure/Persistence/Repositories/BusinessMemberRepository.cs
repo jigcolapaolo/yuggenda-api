@@ -58,4 +58,16 @@ public class BusinessMemberRepository : IBusinessMemberRepository
                     member.UserId == userId,
                 cancellationToken);
     }
+
+    public Task RemoveAsync(
+        BusinessMember businessMember,
+        CancellationToken cancellationToken
+    )
+    {
+        cancellationToken.ThrowIfCancellationRequested();
+
+        _context.BusinessMembers.Remove(businessMember);
+
+        return Task.CompletedTask;
+    }
 }

@@ -149,4 +149,21 @@ public class BusinessesController : ControllerBase
 
         return Ok(response);
     }
+
+    [HttpDelete("{businessId:guid}/members/{memberId:guid}")]
+    [Authorize(Policy = BusinessPolicies.RemoveMembers)]
+    public async Task<IActionResult> RemoveMember(
+        Guid businessId,
+        Guid memberId,
+        CancellationToken cancellationToken
+    )
+    {
+        await _businessMemberService.RemoveAsync(
+            businessId,
+            memberId,
+            cancellationToken
+        );
+
+        return NoContent();
+    }
 }

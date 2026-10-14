@@ -15,4 +15,9 @@ public interface IBusinessMemberRepository
         Guid userId, 
         CancellationToken cancellationToken
     );
+
+    Task RemoveAsync(
+        BusinessMember businessMember,
+        CancellationToken cancellationToken
+    );
 }

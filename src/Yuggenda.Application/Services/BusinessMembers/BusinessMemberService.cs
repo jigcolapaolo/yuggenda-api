@@ -145,4 +145,33 @@ public class BusinessMemberService
             CreatedAt = member.CreatedAt
         };
     }
+
+    public async Task RemoveAsync(
+        Guid businessId,
+        Guid memberId,
+        CancellationToken cancellationToken
+    )
+    {
+        var member = await _businessMemberRepository.GetByIdAsync(
+            memberId,
+            cancellationToken
+        );
+
+        if (member is null || member.BusinessId != businessId)
+        {
+            throw new KeyNotFoundException("Business member not found");
+        }
+
+        if (member.Role == BusinessRole.Owner)
+        {
+            throw new ConflictException(
+                "The business owner cannot be removed"
+            );
+        }
+
+        await _businessMemberRepository.RemoveAsync(member, cancellationToken);
+
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
+    }
+
 }
