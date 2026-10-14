@@ -73,6 +73,14 @@ public static class AuthorizationServiceExtensions
                         BusinessRole.Owner,
                         BusinessRole.Admin));
             });
+
+            options.AddPolicy(BusinessPolicies.TransferOwnership, policy =>
+            {
+                policy.RequireAuthenticatedUser();
+                policy.AddRequirements(
+                    new BusinessPermissionRequirement(BusinessRole.Owner));
+            });
+
         });
 
         return services;

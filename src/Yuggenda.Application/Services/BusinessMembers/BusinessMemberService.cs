@@ -210,4 +210,44 @@ public class BusinessMemberService
         await _unitOfWork.SaveChangesAsync(cancellationToken);
     }
 
+    public async Task TransferOwnershipAsync(
+        Guid businessId,
+        Guid memberId,
+        CancellationToken cancellationToken
+    )
+    {
+        var currentOwner = await _businessMemberRepository.GetByBusinessAndUserIdAsync(
+            businessId,
+            _currentUser.UserId,
+            cancellationToken
+        );
+
+        if (currentOwner is null || currentOwner.Role != BusinessRole.Owner)
+        {
+            throw new UnauthorizedAccessException(
+                "Only the current business owner can transfer ownership"
+            );
+        }
+
+        var newOwner = await _businessMemberRepository.GetByIdAsync(memberId, cancellationToken);
+
+        if (newOwner is null || newOwner.BusinessId != businessId)
+        {
+            throw new KeyNotFoundException(
+                "Business member not found"
+            );
+        }
+
+        if (newOwner.Id == currentOwner.Id)
+        {
+            throw new ConflictException(
+                "The current owner already owns this business"
+            );
+        }
+
+        currentOwner.ChangeRole(BusinessRole.Admin);
+        newOwner.ChangeRole(BusinessRole.Owner);
+
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
+    }
 }

@@ -178,4 +178,21 @@ public class BusinessesController : ControllerBase
 
         return NoContent();
     }
+
+    [HttpPost("{businessId:guid}/members/{memberId:guid}/transfer-ownership")]
+    [Authorize(Policy = BusinessPolicies.TransferOwnership)]
+    public async Task<IActionResult> TransferOwnership(
+        Guid businessId,
+        Guid memberId,
+        CancellationToken cancellationToken
+    )
+    {
+        await _businessMemberService.TransferOwnershipAsync(
+            businessId,
+            memberId,
+            cancellationToken
+        );
+
+        return NoContent();
+    }
 }
