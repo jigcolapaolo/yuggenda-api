@@ -133,6 +133,13 @@ public class BusinessMemberService
             throw new KeyNotFoundException("Business member not found.");
         }
 
+        if (member.Role == BusinessRole.Owner)
+        {
+            throw new ConflictException(
+                "The business owner role cannot be changed directly. Transfer ownership first."
+            );
+        }
+
         member.ChangeRole(request.Role);
 
         await _unitOfWork.SaveChangesAsync(cancellationToken);
