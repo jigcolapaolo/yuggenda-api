@@ -32,5 +32,10 @@ public class BusinessMemberConfiguration : IEntityTypeConfiguration<BusinessMemb
             member.UserId
         })
         .IsUnique();
+
+        
+        builder.HasIndex(member => member.BusinessId)
+            .IsUnique()
+            .HasFilter("\"Role\" = 0");
     }
 }

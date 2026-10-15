@@ -186,6 +186,10 @@ namespace Yuggenda.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("BusinessId")
+                        .IsUnique()
+                        .HasFilter("\"Role\" = 0");
+
                     b.HasIndex("UserId");
 
                     b.HasIndex("BusinessId", "UserId")
