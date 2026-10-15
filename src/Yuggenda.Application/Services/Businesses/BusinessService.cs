@@ -1,0 +1,176 @@
+using Yuggenda.Application.Abstractions.Authentication;
+using Yuggenda.Application.Abstractions.Persistence;
+using Yuggenda.Application.DTOs.Businesses;
+using Yuggenda.Domain.Entities;
+using Yuggenda.Domain.Enums;
+
+namespace Yuggenda.Application.Services.Businesses;
+
+public class BusinessService
+{
+    private readonly IBusinessRepository _businessRepository;
+    private readonly IBusinessMemberRepository _businessMemberRepository;
+    private readonly IUnitOfWork _unitOfWork;
+    private readonly ICurrentUser _currentUser;
+
+    public BusinessService(
+        IBusinessRepository businessRepository,
+        IBusinessMemberRepository businessMemberRepository,
+        IUnitOfWork unitOfWork,
+        ICurrentUser currentUser
+    )
+    {
+        _businessRepository = businessRepository;
+        _businessMemberRepository = businessMemberRepository;
+        _unitOfWork = unitOfWork;
+        _currentUser = currentUser;
+    }
+
+    public async Task<BusinessResponse> CreateAsync(
+        CreateBusinessRequest request,
+        CancellationToken cancellationToken
+    )
+    {
+        var business = new Business(
+            request.Name,
+            request.Timezone,
+            request.Description,
+            request.Email,
+            request.Phone
+        );
+
+        var owner = new BusinessMember(
+            business.Id,
+            _currentUser.UserId,
+            BusinessRole.Owner
+        );
+
+        await _businessRepository.AddAsync(business, cancellationToken);
+        await _businessMemberRepository.AddAsync(owner, cancellationToken);
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+        return new BusinessResponse
+        {
+            Id = business.Id,
+            Name = business.Name,
+            Description = business.Description,
+            Email = business.Email,
+            Phone = business.Phone,
+            Timezone = business.Timezone,
+            CreatedAt = business.CreatedAt,
+            UpdatedAt = business.UpdatedAt
+        };
+    }
+
+    public async Task<BusinessResponse> GetByIdAsync(
+        Guid id,
+        CancellationToken cancellationToken
+    )
+    {
+        var business = await _businessRepository.GetByIdAsync(id, cancellationToken);
+
+        if (business is null)
+        {
+            throw new KeyNotFoundException("Business not found");
+        }
+
+        return new BusinessResponse
+        {
+            Id = business.Id,
+            Name = business.Name,
+            Description = business.Description,
+            Email = business.Email,
+            Phone = business.Phone,
+            Timezone = business.Timezone,
+            CreatedAt = business.CreatedAt,
+            UpdatedAt = business.UpdatedAt
+        };
+    }
+
+    public async Task<List<BusinessResponse>> GetAllAsync(
+        CancellationToken cancellationToken
+    )
+    {
+        var businesses = await _businessRepository.GetAllAsync(cancellationToken);
+
+        return businesses.Select(business => new BusinessResponse
+        {
+            Id = business.Id,
+            Name = business.Name,
+            Description = business.Description,
+            Email = business.Email,
+            Phone = business.Phone,
+            Timezone = business.Timezone,
+            CreatedAt = business.CreatedAt,
+            UpdatedAt = business.UpdatedAt
+        }).ToList();
+    }
+
+    public async Task<List<BusinessResponse>> GetMineAsync(CancellationToken cancellationToken)
+    {
+        var businesses = await _businessRepository.GetByUserIdAsync(
+            _currentUser.UserId,
+            cancellationToken
+        );
+
+        return businesses.Select(business => new BusinessResponse
+        {
+            Id = business.Id,
+            Name = business.Name,
+            Description = business.Description,
+            Email = business.Email,
+            Phone = business.Phone,
+            Timezone = business.Timezone,
+            CreatedAt = business.CreatedAt,
+            UpdatedAt = business.UpdatedAt
+        }).ToList();
+    }
+
+    public async Task<BusinessResponse> UpdateAsync(
+        Guid id,
+        UpdateBusinessRequest request,
+        CancellationToken cancellationToken
+    )
+    {
+        var business = await _businessRepository.GetByIdAsync(id, cancellationToken);
+
+        if (business is null)
+        {
+            throw new KeyNotFoundException("Business not found");
+        }
+
+        business.Update(
+            name: request.Name ?? business.Name,
+            description: request.Description ?? business.Description,
+            email: request.Email ?? business.Email,
+            phone: request.Phone ?? business.Phone,
+            timezone: request.Timezone ?? business.Timezone
+        );
+
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+        return new BusinessResponse
+        {
+            Id = business.Id,
+            Name = business.Name,
+            Description = business.Description,
+            Email = business.Email,
+            Phone = business.Phone,
+            Timezone = business.Timezone,
+            CreatedAt = business.CreatedAt,
+            UpdatedAt = business.UpdatedAt
+        };
+    }
+
+    public async Task DeleteAsync(Guid id, CancellationToken cancellationToken)
+    {
+        var business = await _businessRepository.GetByIdAsync(id, cancellationToken);
+
+        if (business is null)
+            throw new KeyNotFoundException("Business not found.");
+
+        await _businessRepository.DeleteAsync(business, cancellationToken);
+
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
+    }
+}

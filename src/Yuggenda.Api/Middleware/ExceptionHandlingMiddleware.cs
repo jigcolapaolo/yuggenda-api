@@ -18,6 +18,22 @@ public class ExceptionHandlingMiddleware
         {
             await _next(context);
         }
+        catch (KeyNotFoundException exception)
+        {
+            context.Response.StatusCode = StatusCodes.Status404NotFound;
+            context.Response.ContentType = "application/json";
+
+            var response = new
+            {
+                title = "Not Found",
+                status = StatusCodes.Status404NotFound,
+                detail = exception.Message
+            };
+
+            await context.Response.WriteAsync(
+                JsonSerializer.Serialize(response));
+
+        }
         catch (ConflictException exception)
         {
             context.Response.StatusCode = StatusCodes.Status409Conflict;
@@ -42,6 +58,21 @@ public class ExceptionHandlingMiddleware
             {
                 title = "Unauthorized",
                 status = StatusCodes.Status401Unauthorized,
+                detail = exception.Message
+            };
+
+            await context.Response.WriteAsync(
+                JsonSerializer.Serialize(response));
+        }
+        catch (ArgumentException exception)
+        {
+            context.Response.StatusCode = StatusCodes.Status400BadRequest;
+            context.Response.ContentType = "application/json";
+
+            var response = new
+            {
+                title = "Bad Request",
+                status = StatusCodes.Status400BadRequest,
                 detail = exception.Message
             };
 

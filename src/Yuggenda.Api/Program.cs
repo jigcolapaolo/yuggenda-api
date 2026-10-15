@@ -10,6 +10,9 @@ using System.Text;
 using Yuggenda.Infrastructure.Authentication;
 using Yuggenda.Application.Abstractions.Authentication;
 using Yuggenda.Api.Authentication;
+using Yuggenda.Api.Authorization;
+using Microsoft.AspNetCore.Authorization;
+using Yuggenda.Domain.Enums;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -49,7 +52,15 @@ builder.Services.AddSwaggerGen(options =>
         }
     });
 });
-builder.Services.AddControllers();
+
+builder.Services
+    .AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.Converters.Add(
+            new System.Text.Json.Serialization.JsonStringEnumConverter()
+        );
+    });
 
 builder.Services.AddHttpContextAccessor();
 
@@ -89,7 +100,9 @@ builder.Services
         };
     });
 
-builder.Services.AddAuthorization();
+builder.Services.AddYuggendaAuthorization();
+
+builder.Services.AddScoped<IAuthorizationHandler, BusinessPermissionHandler>();
 
 var app = builder.Build();
 

@@ -31,4 +31,9 @@ public class BusinessMember
         Role = role;
         CreatedAt = DateTime.UtcNow;
     }
+
+    public void ChangeRole(BusinessRole role)
+    {
+        Role = role;
+    }
 }
