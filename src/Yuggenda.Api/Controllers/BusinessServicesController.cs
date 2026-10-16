@@ -8,11 +8,11 @@ namespace Yuggenda.Api.Controllers;
 
 [ApiController]
 [Route("businesses/{businessId:guid}/services")]
-public class ServicesController : ControllerBase
+public class BusinessServicesController : ControllerBase
 {
     private readonly ServiceService _serviceService;
 
-    public ServicesController(ServiceService serviceService)
+    public BusinessServicesController(ServiceService serviceService)
     {
         _serviceService = serviceService;
     }
@@ -36,5 +36,19 @@ public class ServicesController : ControllerBase
             new { id = service.Id },
             service
         );
+    }
+
+    [HttpGet]
+    public async Task<ActionResult<List<ServiceResponse>>> GetByBusinessId(
+        Guid businessId,
+        CancellationToken cancellationToken
+    )
+    {
+        var services = await _serviceService.GetByBusinessIdAsync(
+            businessId,
+            cancellationToken
+        );
+
+        return Ok(services);
     }
 }

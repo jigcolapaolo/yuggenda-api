@@ -8,11 +8,11 @@ namespace Yuggenda.Api.Controllers;
 
 [ApiController]
 [Route("services")]
-public class BusinessServicesController : ControllerBase
+public class ServicesController : ControllerBase
 {
     private readonly ServiceService _serviceService;
 
-    public BusinessServicesController(ServiceService serviceService)
+    public ServicesController(ServiceService serviceService)
     {
         _serviceService = serviceService;
     }
