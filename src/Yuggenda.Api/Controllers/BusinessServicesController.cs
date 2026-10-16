@@ -1,0 +1,40 @@
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Yuggenda.Application.Services;
+using Yuggenda.Application.DTOs.Services;
+using Yuggenda.Api.Authorization;
+
+namespace Yuggenda.Api.Controllers;
+
+[ApiController]
+[Route("businesses/{businessId:guid}/services")]
+public class ServicesController : ControllerBase
+{
+    private readonly ServiceService _serviceService;
+
+    public ServicesController(ServiceService serviceService)
+    {
+        _serviceService = serviceService;
+    }
+
+    [HttpPost]
+    [Authorize(Policy = BusinessPolicies.ManageServices)]
+    public async Task<ActionResult<ServiceResponse>> Create(
+        Guid businessId,
+        CreateServiceRequest request,
+        CancellationToken cancellationToken
+    )
+    {
+        var service = await _serviceService.CreateAsync(
+            businessId,
+            request,
+            cancellationToken
+        );
+
+        return CreatedAtAction(
+            "GetServiceById",
+            new { id = service.Id },
+            service
+        );
+    }
+}

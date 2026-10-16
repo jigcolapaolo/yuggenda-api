@@ -35,4 +35,30 @@ public class Service
         IsActive = true;
         CreatedAt = DateTime.UtcNow;
     }
+
+    public void Update(
+        string name,
+        string? description,
+        int durationMinutes,
+        decimal price
+    )
+    {
+        Name = name;
+        Description = description;
+        DurationMinutes = durationMinutes;
+        Price = price;
+        UpdatedAt = DateTime.UtcNow;
+    }
+
+    public void Deactivate()
+    {
+        IsActive = false;
+        UpdatedAt = DateTime.UtcNow;
+    }
+
+    public void Activate()
+    {
+        IsActive = true;
+        UpdatedAt = DateTime.Now;
+    }
 }
