@@ -23,6 +23,8 @@ public class BusinessServicesController : ControllerBase
         CancellationToken cancellationToken
     )
     {
-        throw new NotImplementedException();
+        var service = await _serviceService.GetByIdAsync(id, cancellationToken);
+
+        return Ok(service);
     }
 }

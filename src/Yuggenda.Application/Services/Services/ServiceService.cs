@@ -48,6 +48,21 @@ public class ServiceService
         return MapToResponse(service);
     }
 
+    public async Task<ServiceResponse> GetByIdAsync(
+        Guid id,
+        CancellationToken cancellationToken
+    )
+    {
+        var service = await _serviceRepository.GetByIdAsync(id, cancellationToken);
+
+        if (service is null)
+        {
+            throw new KeyNotFoundException("Service not found.");
+        }
+
+        return MapToResponse(service);
+    }
+
     private static ServiceResponse MapToResponse(Service service)
     {
         return new ServiceResponse
