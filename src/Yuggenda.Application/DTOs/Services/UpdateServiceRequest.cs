@@ -13,6 +13,6 @@ public class UpdateServiceRequest
     [Range(1, 1440)]
     public int? DurationMinutes { get; init; }
 
-    [Range(typeof(decimal), "0.01", "9999999999999999.99")]
+    [Range(typeof(decimal), "0,01", "9999999999999999,99")]
     public decimal? Price { get; init; }
 }

@@ -86,6 +86,31 @@ public class ServiceService
         return services.Select(MapToResponse).ToList();
     }
 
+    public async Task<ServiceResponse> UpdateAsync(
+        Guid id,
+        UpdateServiceRequest request,
+        CancellationToken cancellationToken
+    )
+    {
+        var service = await _serviceRepository.GetByIdAsync(id, cancellationToken);
+
+        if (service is null)
+        {
+            throw new KeyNotFoundException("Service not found.");
+        }
+
+        service.Update(
+            request.Name?.Trim() ?? service.Name,
+            request.Description?.Trim() ?? service.Description,
+            request.DurationMinutes ?? service.DurationMinutes,
+            request.Price ?? service.Price
+        );
+
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+        return MapToResponse(service);
+    }
+
     private static ServiceResponse MapToResponse(Service service)
     {
         return new ServiceResponse

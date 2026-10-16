@@ -11,10 +11,15 @@ namespace Yuggenda.Api.Controllers;
 public class ServicesController : ControllerBase
 {
     private readonly ServiceService _serviceService;
+    private readonly IAuthorizationService _authorizationService;
 
-    public ServicesController(ServiceService serviceService)
+    public ServicesController(
+        ServiceService serviceService,
+        IAuthorizationService authorizationService
+    )
     {
         _serviceService = serviceService;
+        _authorizationService = authorizationService;
     }
 
     [HttpGet("{id:guid}", Name = "GetServiceById")]
@@ -24,6 +29,22 @@ public class ServicesController : ControllerBase
     )
     {
         var service = await _serviceService.GetByIdAsync(id, cancellationToken);
+
+        return Ok(service);
+    }
+
+    [HttpPatch("{id:guid}")]
+    public async Task<ActionResult<ServiceResponse>> Update(
+        Guid id,
+        UpdateServiceRequest request,
+        CancellationToken cancellationToken
+    )
+    {
+        var service = await _serviceService.UpdateAsync(
+            id,
+            request,
+            cancellationToken
+        );
 
         return Ok(service);
     }
