@@ -74,7 +74,8 @@ public class BusinessesController : ControllerBase
     }
 
     [HttpPatch("{id:guid}")]
-    [Authorize(Policy = BusinessPolicies.Update)]
+    [Authorize]
+    [BusinessResourceAuthorize(BusinessPolicies.Update)]
     public async Task<ActionResult<BusinessResponse>> Update(
         Guid id,
         UpdateBusinessRequest request,
@@ -87,7 +88,8 @@ public class BusinessesController : ControllerBase
     }
 
     [HttpDelete("{id:guid}")]
-    [Authorize(Policy = BusinessPolicies.Delete)]
+    [Authorize]
+    [BusinessResourceAuthorize(BusinessPolicies.Delete)]
     public async Task<ActionResult> Delete(Guid id, CancellationToken cancellationToken)
     {
         await _businessService.DeleteAsync(id, cancellationToken);
@@ -96,7 +98,8 @@ public class BusinessesController : ControllerBase
     }
 
     [HttpGet("{businessId:guid}/members")]
-    [Authorize(Policy = BusinessPolicies.ReadMembers)]
+    [Authorize]
+    [BusinessResourceAuthorize(BusinessPolicies.ReadMembers)]
     public async Task<ActionResult<List<BusinessMemberResponse>>> GetMembers(
         Guid businessId,
         CancellationToken cancellationToken
@@ -111,7 +114,8 @@ public class BusinessesController : ControllerBase
     }
 
     [HttpPost("{businessId:guid}/members")]
-    [Authorize(Policy = BusinessPolicies.AddMembers)]
+    [Authorize]
+    [BusinessResourceAuthorize(BusinessPolicies.AddMembers)]
     public async Task<ActionResult<BusinessMemberResponse>> AddMember(
         Guid businessId,
         AddBusinessMemberRequest request,
@@ -132,7 +136,8 @@ public class BusinessesController : ControllerBase
     }
 
     [HttpPatch("{businessId:guid}/members/{memberId:guid}")]
-    [Authorize(Policy = BusinessPolicies.UpdateMemberRole)]
+    [Authorize]
+    [BusinessResourceAuthorize(BusinessPolicies.UpdateMemberRole)]
     public async Task<ActionResult<BusinessMemberResponse>> UpdateMemberRole(
         Guid businessId,
         Guid memberId,
@@ -151,7 +156,8 @@ public class BusinessesController : ControllerBase
     }
 
     [HttpDelete("{businessId:guid}/members/{memberId:guid}")]
-    [Authorize(Policy = BusinessPolicies.RemoveMembers)]
+    [Authorize]
+    [BusinessResourceAuthorize(BusinessPolicies.RemoveMembers)]
     public async Task<IActionResult> RemoveMember(
         Guid businessId,
         Guid memberId,
@@ -180,7 +186,8 @@ public class BusinessesController : ControllerBase
     }
 
     [HttpPost("{businessId:guid}/members/{memberId:guid}/transfer-ownership")]
-    [Authorize(Policy = BusinessPolicies.TransferOwnership)]
+    [Authorize]
+    [BusinessResourceAuthorize(BusinessPolicies.TransferOwnership)]
     public async Task<IActionResult> TransferOwnership(
         Guid businessId,
         Guid memberId,

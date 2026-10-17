@@ -18,7 +18,8 @@ public class BusinessServicesController : ControllerBase
     }
 
     [HttpPost]
-    [Authorize(Policy = BusinessPolicies.ManageServices)]
+    [Authorize]
+    [BusinessResourceAuthorize(BusinessPolicies.ManageServices)]
     public async Task<ActionResult<ServiceResponse>> Create(
         Guid businessId,
         CreateServiceRequest request,

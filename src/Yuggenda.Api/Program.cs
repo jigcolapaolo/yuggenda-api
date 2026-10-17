@@ -104,6 +104,7 @@ builder.Services.AddYuggendaAuthorization();
 
 builder.Services.AddScoped<IAuthorizationHandler, BusinessPermissionHandler>();
 
+
 var app = builder.Build();
 
 app.UseMiddleware<ExceptionHandlingMiddleware>();
