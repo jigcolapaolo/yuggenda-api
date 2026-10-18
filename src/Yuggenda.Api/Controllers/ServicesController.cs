@@ -33,6 +33,8 @@ public class ServicesController : ControllerBase
         return Ok(service);
     }
 
+    [Authorize]
+    [ServiceResourceAuthorize(BusinessPolicies.ManageServices)]
     [HttpPatch("{id:guid}")]
     public async Task<ActionResult<ServiceResponse>> Update(
         Guid id,
