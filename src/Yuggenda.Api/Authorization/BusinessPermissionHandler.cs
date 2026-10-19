@@ -15,6 +15,12 @@ public sealed class BusinessPermissionHandler(
         AuthorizationHandlerContext context,
         BusinessPermissionRequirement requirement)
     {
+        
+        if (!context.User.Identity?.IsAuthenticated ?? true)
+        {
+            return;
+        }
+
         if (context.Resource is not Guid businessId)
             return;
 

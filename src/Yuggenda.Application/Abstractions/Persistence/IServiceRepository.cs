@@ -14,10 +14,14 @@ public interface IServiceRepository
         CancellationToken cancellationToken
     );
 
+
     Task<List<Service>> GetByBusinessIdAsync(
         Guid businessId,
-        CancellationToken cancellationToken
+        CancellationToken cancellationToken,
+        bool activeOnly = false
     );
+
+
 
     Task RemoveAsync(
         Service service,

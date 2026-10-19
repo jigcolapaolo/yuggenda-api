@@ -11,10 +11,15 @@ namespace Yuggenda.Api.Controllers;
 public class BusinessServicesController : ControllerBase
 {
     private readonly ServiceService _serviceService;
+    private readonly IAuthorizationService _authorizationService;
 
-    public BusinessServicesController(ServiceService serviceService)
+    public BusinessServicesController(
+        ServiceService serviceService,
+        IAuthorizationService authorizationService
+    )
     {
         _serviceService = serviceService;
+        _authorizationService = authorizationService;
     }
 
     [Authorize]
@@ -39,17 +44,29 @@ public class BusinessServicesController : ControllerBase
         );
     }
 
+
+    [AllowAnonymous]
     [HttpGet]
     public async Task<ActionResult<List<ServiceResponse>>> GetByBusinessId(
         Guid businessId,
         CancellationToken cancellationToken
     )
     {
+        var authorizationResult = await _authorizationService.AuthorizeAsync(
+            User,
+            businessId,
+            BusinessPolicies.ReadServices
+        );
+
+        var activeOnly = !authorizationResult.Succeeded;
+
         var services = await _serviceService.GetByBusinessIdAsync(
             businessId,
-            cancellationToken
+            cancellationToken,
+            activeOnly
         );
 
         return Ok(services);
     }
+
 }

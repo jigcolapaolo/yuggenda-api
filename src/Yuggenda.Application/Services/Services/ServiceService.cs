@@ -63,9 +63,11 @@ public class ServiceService
         return MapToResponse(service);
     }
 
+
     public async Task<List<ServiceResponse>> GetByBusinessIdAsync(
         Guid businessId,
-        CancellationToken cancellationToken
+        CancellationToken cancellationToken,
+        bool activeOnly = false
     )
     {
         var business = await _businessRepository.GetByIdAsync(
@@ -80,11 +82,13 @@ public class ServiceService
 
         var services = await _serviceRepository.GetByBusinessIdAsync(
             businessId,
-            cancellationToken
+            cancellationToken,
+            activeOnly
         );
 
         return services.Select(MapToResponse).ToList();
     }
+
 
     public async Task<ServiceResponse> UpdateAsync(
         Guid id,

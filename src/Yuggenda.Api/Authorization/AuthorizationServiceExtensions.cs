@@ -91,6 +91,20 @@ public static class AuthorizationServiceExtensions
                     )
                 );
             });
+
+            options.AddPolicy(
+                BusinessPolicies.ReadServices, policy =>
+                {
+                    policy.RequireAuthenticatedUser();
+                    policy.AddRequirements(
+                        new BusinessPermissionRequirement(
+                            BusinessRole.Owner,
+                            BusinessRole.Admin,
+                            BusinessRole.Staff
+                        )
+                    );
+                }
+            );
         });
 
         return services;

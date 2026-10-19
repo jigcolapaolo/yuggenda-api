@@ -36,16 +36,26 @@ public class ServiceRepository : IServiceRepository
             );
     }
 
+
     public async Task<List<Service>> GetByBusinessIdAsync(
         Guid businessId,
-        CancellationToken cancellationToken
+        CancellationToken cancellationToken,
+        bool activeOnly = false
     )
     {
-        return await _context.Services
-            .Where(service => service.BusinessId == businessId)
+        var query = _context.Services
+            .Where(service => service.BusinessId == businessId);
+
+        if (activeOnly)
+        {
+            query = query.Where(service => service.IsActive);
+        }
+
+        return await query
             .OrderBy(service => service.Name)
             .ToListAsync(cancellationToken);
     }
+
 
     public Task RemoveAsync(
         Service service,
