@@ -115,6 +115,47 @@ public class ServiceService
         return MapToResponse(service);
     }
 
+    
+    public async Task DeactivateAsync(
+        Guid id,
+        CancellationToken cancellationToken
+    )
+    {
+        var service = await _serviceRepository.GetByIdAsync(
+            id,
+            cancellationToken
+        );
+
+        if (service is null)
+        {
+            throw new KeyNotFoundException("Service not found.");
+        }
+
+        service.Deactivate();
+
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
+    }
+
+    public async Task ActivateAsync(
+        Guid id,
+        CancellationToken cancellationToken
+    )
+    {
+        var service = await _serviceRepository.GetByIdAsync(
+            id,
+            cancellationToken
+        );
+
+        if (service is null)
+        {
+            throw new KeyNotFoundException("Service not found.");
+        }
+
+        service.Activate();
+
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
+    }
+
     private static ServiceResponse MapToResponse(Service service)
     {
         return new ServiceResponse

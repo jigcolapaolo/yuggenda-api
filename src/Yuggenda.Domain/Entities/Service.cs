@@ -59,6 +59,6 @@ public class Service
     public void Activate()
     {
         IsActive = true;
-        UpdatedAt = DateTime.Now;
+        UpdatedAt = DateTime.UtcNow;
     }
 }

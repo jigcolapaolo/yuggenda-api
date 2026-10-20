@@ -50,4 +50,32 @@ public class ServicesController : ControllerBase
 
         return Ok(service);
     }
+
+    
+    [Authorize]
+    [ServiceResourceAuthorize(BusinessPolicies.ManageServices)]
+    [HttpDelete("{id:guid}")]
+    public async Task<IActionResult> Deactivate(
+        Guid id,
+        CancellationToken cancellationToken
+    )
+    {
+        await _serviceService.DeactivateAsync(id, cancellationToken);
+
+        return NoContent();
+    }
+
+    [Authorize]
+    [ServiceResourceAuthorize(BusinessPolicies.ManageServices)]
+    [HttpPatch("{id:guid}/activate")]
+    public async Task<IActionResult> Activate(
+        Guid id,
+        CancellationToken cancellationToken
+    )
+    {
+        await _serviceService.ActivateAsync(id, cancellationToken);
+
+        return NoContent();
+    }
+
 }
