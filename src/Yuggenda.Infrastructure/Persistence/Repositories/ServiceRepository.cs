@@ -68,4 +68,19 @@ public class ServiceRepository : IServiceRepository
 
         return Task.CompletedTask;
     }
+
+    public async Task<bool> HasMemberAsync(
+        Guid serviceId,
+        Guid memberId,
+        CancellationToken cancellationToken
+    )
+    {
+        return await _context.Services
+            .Where(service => service.Id == serviceId)
+            .SelectMany(service => service.Members)
+            .AnyAsync(
+                member => member.Id == memberId,
+                cancellationToken
+            );
+    }
 }

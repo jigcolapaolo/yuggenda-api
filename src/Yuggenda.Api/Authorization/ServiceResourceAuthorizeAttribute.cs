@@ -26,7 +26,9 @@ public sealed class ServiceResourceAuthorizationFilter(
         ActionExecutingContext context,
         ActionExecutionDelegate next)
     {
-        var idValue = context.RouteData.Values["id"]?.ToString();
+        var idValue =
+            context.RouteData.Values["id"]?.ToString()
+            ?? context.RouteData.Values["serviceId"]?.ToString();
 
         if (!Guid.TryParse(idValue, out var serviceId))
         {

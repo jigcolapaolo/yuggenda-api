@@ -1,6 +1,7 @@
 using Yuggenda.Application.Abstractions.Persistence;
 using Yuggenda.Application.DTOs.Services;
 using Yuggenda.Domain.Entities;
+using Yuggenda.Domain.Exceptions;
 
 namespace Yuggenda.Application.Services;
 
@@ -9,16 +10,19 @@ public class ServiceService
     private readonly IServiceRepository _serviceRepository;
     private readonly IBusinessRepository _businessRepository;
     private readonly IUnitOfWork _unitOfWork;
+    private readonly IBusinessMemberRepository _businessMemberRepository;
 
     public ServiceService(
         IServiceRepository serviceRepository,
         IBusinessRepository businessRepository,
-        IUnitOfWork unitOfWork
+        IUnitOfWork unitOfWork,
+        IBusinessMemberRepository businessMemberRepository
     )
     {
         _serviceRepository = serviceRepository;
         _businessRepository = businessRepository;
         _unitOfWork = unitOfWork;
+        _businessMemberRepository = businessMemberRepository;
     }
 
     public async Task<ServiceResponse> CreateAsync(
@@ -152,6 +156,81 @@ public class ServiceService
         }
 
         service.Activate();
+
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
+    }
+
+    public async Task AssignStaffAsync(
+        Guid serviceId,
+        Guid memberId,
+        CancellationToken cancellationToken
+    )
+    {
+        var service = await _serviceRepository.GetByIdAsync(
+            serviceId,
+            cancellationToken
+        );
+
+        if (service is null)
+        {
+            throw new KeyNotFoundException("Service not found.");
+        }
+
+        var member = await _businessMemberRepository.GetByIdAsync(
+            memberId,
+            cancellationToken
+        );
+
+        if (member is null)
+        {
+            throw new KeyNotFoundException("Business member not found.");
+        }
+
+        var alreadyAssigned = await _serviceRepository.HasMemberAsync(
+            serviceId,
+            memberId,
+            cancellationToken
+        );
+
+        if (alreadyAssigned)
+        {
+            throw new DomainException(
+                "The member is already assigned to this service."
+            );
+        }
+
+        service.AssignMember(member);
+
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
+    }
+
+    public async Task RemoveStaffAsync(
+        Guid serviceId,
+        Guid memberId,
+        CancellationToken cancellationToken
+    )
+    {
+        var service = await _serviceRepository.GetByIdAsync(
+            serviceId,
+            cancellationToken
+        );
+
+        if (service is null)
+        {
+            throw new KeyNotFoundException("Service not found.");
+        }
+
+        var member = await _businessMemberRepository.GetByIdAsync(
+            memberId,
+            cancellationToken
+        );
+
+        if (member is null)
+        {
+            throw new KeyNotFoundException("Business member not found.");
+        }
+
+        service.RemoveMember(member);
 
         await _unitOfWork.SaveChangesAsync(cancellationToken);
     }

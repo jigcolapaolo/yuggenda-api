@@ -1,3 +1,6 @@
+using Yuggenda.Domain.Enums;
+using Yuggenda.Domain.Exceptions;
+
 namespace Yuggenda.Domain.Entities;
 
 public class Service
@@ -60,5 +63,36 @@ public class Service
     {
         IsActive = true;
         UpdatedAt = DateTime.UtcNow;
+    }
+
+    public void AssignMember(BusinessMember member)
+    {
+        if (member.BusinessId != BusinessId)
+        {
+            throw new DomainException(
+                "The member and service must belong to the same business."
+            );
+        }
+
+        if (member.Role != BusinessRole.Staff)
+        {
+            throw new DomainException(
+                "Only staff members can be assigned to services."
+            );
+        }
+
+        if (Members.Any(existing => existing.Id == member.Id))
+        {
+            throw new DomainException(
+                "The member is already assigned to this service."
+            );
+        }
+
+        Members.Add(member);
+    }
+
+    public void RemoveMember(BusinessMember member)
+    {
+        Members.Remove(member);
     }
 }

@@ -78,4 +78,39 @@ public class ServicesController : ControllerBase
         return NoContent();
     }
 
+    [Authorize]
+    [ServiceResourceAuthorize(BusinessPolicies.ManageServices)]
+    [HttpPost("{serviceId:guid}/staff/{memberId:guid}")]
+    public async Task<IActionResult> AssignStaff(
+        Guid serviceId,
+        Guid memberId,
+        CancellationToken cancellationToken
+    )
+    {
+        await _serviceService.AssignStaffAsync(
+            serviceId,
+            memberId,
+            cancellationToken
+        );
+
+        return NoContent();
+    }
+
+    // [Authorize]
+    // [ServiceResourceAuthorize(BusinessPolicies.ManageServices)]
+    // [HttpDelete("{serviceId:guid}/staff/{memberId:guid}")]
+    // public async Task<IActionResult> RemoveStaff(
+    //     Guid serviceId,
+    //     Guid memberId,
+    //     CancellationToken cancellationToken
+    // )
+    // {
+    //     await _serviceService.RemoveStaffAsync(
+    //         serviceId,
+    //         memberId,
+    //         cancellationToken
+    //     );
+
+    //     return NoContent();
+    // }
 }

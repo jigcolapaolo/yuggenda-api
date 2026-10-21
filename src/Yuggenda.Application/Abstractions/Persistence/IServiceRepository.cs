@@ -27,4 +27,10 @@ public interface IServiceRepository
         Service service,
         CancellationToken cancellationToken
     );
+
+    Task<bool> HasMemberAsync(
+        Guid serviceId,
+        Guid memberId,
+        CancellationToken cancellationToken
+    );
 }
