@@ -210,7 +210,7 @@ public class ServiceService
         CancellationToken cancellationToken
     )
     {
-        var service = await _serviceRepository.GetByIdAsync(
+        var service = await _serviceRepository.GetByIdWithMembersAsync(
             serviceId,
             cancellationToken
         );

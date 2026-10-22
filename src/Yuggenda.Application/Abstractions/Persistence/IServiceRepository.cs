@@ -14,14 +14,11 @@ public interface IServiceRepository
         CancellationToken cancellationToken
     );
 
-
     Task<List<Service>> GetByBusinessIdAsync(
         Guid businessId,
         CancellationToken cancellationToken,
         bool activeOnly = false
     );
-
-
 
     Task RemoveAsync(
         Service service,
@@ -31,6 +28,11 @@ public interface IServiceRepository
     Task<bool> HasMemberAsync(
         Guid serviceId,
         Guid memberId,
+        CancellationToken cancellationToken
+    );
+
+    Task<Service?> GetByIdWithMembersAsync(
+        Guid id,
         CancellationToken cancellationToken
     );
 }

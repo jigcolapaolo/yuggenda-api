@@ -83,4 +83,17 @@ public class ServiceRepository : IServiceRepository
                 cancellationToken
             );
     }
+
+    public async Task<Service?> GetByIdWithMembersAsync(
+        Guid id,
+        CancellationToken cancellationToken
+    )
+    {
+        return await _context.Services
+            .Include(service => service.Members)
+            .FirstOrDefaultAsync(
+                service => service.Id == id,
+                cancellationToken
+            );
+    }
 }

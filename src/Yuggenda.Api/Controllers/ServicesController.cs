@@ -96,21 +96,21 @@ public class ServicesController : ControllerBase
         return NoContent();
     }
 
-    // [Authorize]
-    // [ServiceResourceAuthorize(BusinessPolicies.ManageServices)]
-    // [HttpDelete("{serviceId:guid}/staff/{memberId:guid}")]
-    // public async Task<IActionResult> RemoveStaff(
-    //     Guid serviceId,
-    //     Guid memberId,
-    //     CancellationToken cancellationToken
-    // )
-    // {
-    //     await _serviceService.RemoveStaffAsync(
-    //         serviceId,
-    //         memberId,
-    //         cancellationToken
-    //     );
+    [Authorize]
+    [ServiceResourceAuthorize(BusinessPolicies.ManageServices)]
+    [HttpDelete("{serviceId:guid}/staff/{memberId:guid}")]
+    public async Task<IActionResult> RemoveStaff(
+        Guid serviceId,
+        Guid memberId,
+        CancellationToken cancellationToken
+    )
+    {
+        await _serviceService.RemoveStaffAsync(
+            serviceId,
+            memberId,
+            cancellationToken
+        );
 
-    //     return NoContent();
-    // }
+        return NoContent();
+    }
 }
