@@ -23,6 +23,7 @@ public class ServiceRepository : IServiceRepository
         await _context.Services.AddAsync(service, cancellationToken);
     }
 
+
     public async Task<Service?> GetByIdAsync(
         Guid id,
         CancellationToken cancellationToken
@@ -30,12 +31,13 @@ public class ServiceRepository : IServiceRepository
     {
         return await _context.Services
             .Include(service => service.Business)
+            .Include(service => service.Members)
+                .ThenInclude(member => member.User)
             .FirstOrDefaultAsync(
                 service => service.Id == id,
                 cancellationToken
             );
     }
-
 
     public async Task<List<Service>> GetByBusinessIdAsync(
         Guid businessId,
@@ -52,10 +54,11 @@ public class ServiceRepository : IServiceRepository
         }
 
         return await query
+            .Include(service => service.Members)
+                .ThenInclude(member => member.User)
             .OrderBy(service => service.Name)
             .ToListAsync(cancellationToken);
     }
-
 
     public Task RemoveAsync(
         Service service,

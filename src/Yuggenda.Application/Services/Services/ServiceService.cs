@@ -235,6 +235,7 @@ public class ServiceService
         await _unitOfWork.SaveChangesAsync(cancellationToken);
     }
 
+
     private static ServiceResponse MapToResponse(Service service)
     {
         return new ServiceResponse
@@ -247,7 +248,18 @@ public class ServiceService
             Price = service.Price,
             IsActive = service.IsActive,
             CreatedAt = service.CreatedAt,
-            UpdatedAt = service.UpdatedAt
+            UpdatedAt = service.UpdatedAt,
+            Members = service.Members
+                .Select(member => new ServiceMemberResponse
+                {
+                    Id = member.Id,
+                    UserId = member.UserId,
+                    FirstName = member.User.FirstName,
+                    LastName = member.User.LastName,
+                    Role = member.Role
+                })
+                .ToList()
         };
     }
+
 }
