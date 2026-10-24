@@ -10,4 +10,6 @@ public static class BusinessPolicies
     public const string UpdateMemberRole = "BusinessUpdateMemberRole";
     public const string RemoveMembers = "BusinessRemoveMembers";
     public const string TransferOwnership = "BusinessTransferOwnership";
+    public const string ManageServices = "BusinessManageServices";
+    public const string ReadServices = "BusinessReadServices";
 }

@@ -33,6 +33,7 @@ public static class DependencyInjection
 
         services.AddScoped<IBusinessRepository, BusinessRepository>();
         services.AddScoped<IBusinessMemberRepository, BusinessMemberRepository>();
+        services.AddScoped<IServiceRepository, ServiceRepository>();
 
         services.Configure<JwtOptions>(
             configuration.GetSection("Jwt")

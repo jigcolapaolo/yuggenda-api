@@ -1,0 +1,102 @@
+using Microsoft.EntityFrameworkCore;
+using Yuggenda.Application.Abstractions.Persistence;
+using Yuggenda.Domain.Entities;
+using Yuggenda.Infrastructure.Persistence;
+using Yuggenda.Infrastructure.Persistence.Context;
+
+namespace Yuggenda.Infrastructure.Persistence.Repositories;
+
+public class ServiceRepository : IServiceRepository
+{
+    private readonly YuggendaDbContext _context;
+
+    public ServiceRepository(YuggendaDbContext context)
+    {
+        _context = context;
+    }
+
+    public async Task AddAsync(
+        Service service,
+        CancellationToken cancellationToken
+    )
+    {
+        await _context.Services.AddAsync(service, cancellationToken);
+    }
+
+
+    public async Task<Service?> GetByIdAsync(
+        Guid id,
+        CancellationToken cancellationToken
+    )
+    {
+        return await _context.Services
+            .Include(service => service.Business)
+            .Include(service => service.Members)
+                .ThenInclude(member => member.User)
+            .FirstOrDefaultAsync(
+                service => service.Id == id,
+                cancellationToken
+            );
+    }
+
+    public async Task<List<Service>> GetByBusinessIdAsync(
+        Guid businessId,
+        CancellationToken cancellationToken,
+        bool activeOnly = false
+    )
+    {
+        var query = _context.Services
+            .Where(service => service.BusinessId == businessId);
+
+        if (activeOnly)
+        {
+            query = query.Where(service => service.IsActive);
+        }
+
+        return await query
+            .Include(service => service.Members)
+                .ThenInclude(member => member.User)
+            .OrderBy(service => service.Name)
+            .ToListAsync(cancellationToken);
+    }
+
+    public Task RemoveAsync(
+        Service service,
+        CancellationToken cancellationToken
+    )
+    {
+        cancellationToken.ThrowIfCancellationRequested();
+
+        _context.Services.Remove(service);
+
+        return Task.CompletedTask;
+    }
+
+    public async Task<bool> HasMemberAsync(
+        Guid serviceId,
+        Guid memberId,
+        CancellationToken cancellationToken
+    )
+    {
+        return await _context.Services
+            .Where(service => service.Id == serviceId)
+            .SelectMany(service => service.Members)
+            .AnyAsync(
+                member => member.Id == memberId,
+                cancellationToken
+            );
+    }
+
+    public async Task<Service?> GetByIdWithMembersAsync(
+        Guid id,
+        CancellationToken cancellationToken
+    )
+    {
+        return await _context.Services
+            .Include(service => service.Members)
+            .FirstOrDefaultAsync(
+                service => service.Id == id,
+                cancellationToken
+            );
+    }
+}

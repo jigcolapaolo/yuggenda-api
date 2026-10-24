@@ -1,4 +1,5 @@
 using Microsoft.Extensions.DependencyInjection;
+using Yuggenda.Application.Services;
 using Yuggenda.Application.Services.Authentication;
 using Yuggenda.Application.Services.Businesses;
 using Yuggenda.Application.Services.BusinessMembers;
@@ -17,6 +18,7 @@ public static class DependencyInjection
         services.AddScoped<RefreshTokenService>();
         services.AddScoped<BusinessService>();
         services.AddScoped<BusinessMemberService>();
+        services.AddScoped<ServiceService>();
 
         return services;
     }
