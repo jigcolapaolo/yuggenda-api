@@ -15,6 +15,11 @@ public interface IAvailabilityRepository
         CancellationToken cancellationToken
     );
 
+    Task<List<Availability>> GetByBusinessIdAsync(
+        Guid businessId,
+        CancellationToken cancellationToken
+    );
+
     Task<List<Availability>> GetByBusinessMemberIdAsync(
         Guid businessMemberId,
         CancellationToken cancellationToken

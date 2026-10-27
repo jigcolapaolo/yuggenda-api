@@ -124,6 +124,22 @@ public class AvailabilityService
         return MapToResponse(availability);
     }
 
+    public async Task<List<AvailabilityResponse>> GetByBusinessIdAsync(
+        Guid businessId,
+        CancellationToken cancellationToken
+    )
+    {
+        var availabilities =
+            await _availabilityRepository.GetByBusinessIdAsync(
+                businessId,
+                cancellationToken
+            );
+
+        return availabilities
+            .Select(MapToResponse)
+            .ToList();
+    }
+
     private static AvailabilityResponse MapToResponse(Availability availability)
     {
         return new AvailabilityResponse

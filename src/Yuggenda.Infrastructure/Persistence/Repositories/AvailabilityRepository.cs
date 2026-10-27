@@ -35,6 +35,22 @@ public class AvailabilityRepository : IAvailabilityRepository
             );
     }
 
+    public async Task<List<Availability>> GetByBusinessIdAsync(
+        Guid businessId,
+        CancellationToken cancellationToken
+    )
+    {
+        return await _context.Availabilities
+            .Where(availability =>
+                availability.BusinessMember.BusinessId == businessId)
+            .OrderBy(availability => availability.BusinessMemberId)
+            .ThenBy(availability => availability.Type)
+            .ThenBy(availability => availability.DayOfWeek)
+            .ThenBy(availability => availability.SpecificDate)
+            .ThenBy(availability => availability.StartTime)
+            .ToListAsync(cancellationToken);
+    }
+
     public async Task<List<Availability>> GetByBusinessMemberIdAsync(
         Guid businessMemberId,
         CancellationToken cancellationToken

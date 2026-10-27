@@ -36,12 +36,24 @@ public class BusinessAvailabilitiesController : ControllerBase
             cancellationToken
         );
 
-        // return CreatedAtAction(
-        //     nameof(Create),
-        //     new { businessId, businessMemberId },
-        //     availability
-        // );
+        return Created(
+            $"/availabilities/{availability.Id}",
+            availability
+        );
+    }
 
-        return StatusCode(StatusCodes.Status201Created, availability);
+    [AllowAnonymous]
+    [HttpGet]
+    public async Task<ActionResult<List<AvailabilityResponse>>> GetByBusinessId(
+        Guid businessId,
+        CancellationToken cancellationToken
+    )
+    {
+        var availabilities = await _availabilityService.GetByBusinessIdAsync(
+            businessId,
+            cancellationToken
+        );
+
+        return Ok(availabilities);
     }
 }
