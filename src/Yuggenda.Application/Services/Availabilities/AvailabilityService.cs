@@ -140,6 +140,116 @@ public class AvailabilityService
             .ToList();
     }
 
+    public async Task<AvailabilityResponse> UpdateAsync(
+        Guid id,
+        UpdateAvailabilityRequest request,
+        CancellationToken cancellationToken
+    )
+    {
+        var availability = await _availabilityRepository.GetByIdAsync(
+            id,
+            cancellationToken
+        );
+
+        if (availability is null)
+        {
+            throw new KeyNotFoundException("Availability not found.");
+        }
+
+        var businessMember = await _businessMemberRepository.GetByIdAsync(
+            availability.BusinessMemberId,
+            cancellationToken
+        );
+
+        if (businessMember is null)
+        {
+            throw new KeyNotFoundException("Business member not found.");
+        }
+
+        var currentMember =
+            await _businessMemberRepository.GetByBusinessAndUserIdAsync(
+                businessMember.BusinessId,
+                _currentUser.UserId,
+                cancellationToken
+            );
+
+        if (currentMember is null)
+        {
+            throw new UnauthorizedAccessException(
+                "You are not a member of this business."
+            );
+        }
+
+        if (
+            currentMember.Role == BusinessRole.Staff
+            && currentMember.Id != availability.BusinessMemberId
+        )
+        {
+            throw new UnauthorizedAccessException(
+                "Staff members can only manage their own availability."
+            );
+        }
+
+        var dayOfWeek = request.DayOfWeek ?? availability.DayOfWeek;
+        var specificDate = request.SpecificDate ?? availability.SpecificDate;
+        var startTime = request.StartTime ?? availability.StartTime;
+        var endTime = request.EndTime ?? availability.EndTime;
+        var isAvailable = request.IsAvailable ?? availability.IsAvailable;
+
+        var type = availability.Type;
+
+        var existingAvailabilities =
+            await _availabilityRepository.GetByBusinessMemberAndTypeAsync(
+                availability.BusinessMemberId,
+                type,
+                cancellationToken
+            );
+
+        var hasOverlap = existingAvailabilities.Any(existing =>
+        {
+            if (existing.Id == availability.Id)
+            {
+                return false;
+            }
+
+            var samePeriod = type switch
+            {
+                AvailabilityType.Weekly =>
+                    existing.DayOfWeek == dayOfWeek,
+
+                AvailabilityType.Exception =>
+                    existing.SpecificDate == specificDate,
+
+                _ => false
+            };
+
+            var overlaps =
+                existing.StartTime < endTime &&
+                startTime < existing.EndTime;
+
+            return samePeriod && overlaps;
+        });
+
+        if (hasOverlap)
+        {
+            throw new DomainException(
+                "The availability interval overlaps an existing interval."
+            );
+        }
+
+        availability.Update(
+            startTime,
+            endTime,
+            isAvailable,
+            dayOfWeek,
+            specificDate
+        );
+
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+        return MapToResponse(availability);
+    }
+
     private static AvailabilityResponse MapToResponse(Availability availability)
     {
         return new AvailabilityResponse
