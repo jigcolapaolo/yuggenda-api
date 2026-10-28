@@ -250,6 +250,63 @@ public class AvailabilityService
         return MapToResponse(availability);
     }
 
+    public async Task DeleteAsync(
+        Guid id,
+        CancellationToken cancellationToken
+    )
+    {
+        var availability = await _availabilityRepository.GetByIdAsync(
+            id,
+            cancellationToken
+        );
+
+        if (availability is null)
+        {
+            throw new KeyNotFoundException("Availability not found.");
+        }
+
+        var businessMember = await _businessMemberRepository.GetByIdAsync(
+            availability.BusinessMemberId,
+            cancellationToken
+        );
+
+        if (businessMember is null)
+        {
+            throw new KeyNotFoundException("Business member not found.");
+        }
+
+        var currentMember =
+            await _businessMemberRepository.GetByBusinessAndUserIdAsync(
+                businessMember.BusinessId,
+                _currentUser.UserId,
+                cancellationToken
+            );
+
+        if (currentMember is null)
+        {
+            throw new UnauthorizedAccessException(
+                "You are not a member of this business."
+            );
+        }
+
+        if (
+            currentMember.Role == BusinessRole.Staff
+            && currentMember.Id != availability.BusinessMemberId
+        )
+        {
+            throw new UnauthorizedAccessException(
+                "Staff members can only manage their own availability."
+            );
+        }
+
+        await _availabilityRepository.RemoveAsync(
+            availability,
+            cancellationToken
+        );
+
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
+    }
+
     private static AvailabilityResponse MapToResponse(Availability availability)
     {
         return new AvailabilityResponse

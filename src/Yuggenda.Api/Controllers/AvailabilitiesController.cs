@@ -35,4 +35,19 @@ public class AvailabilitiesController : ControllerBase
 
         return Ok(availability);
     }
+
+    [Authorize]
+    [HttpDelete("{id:guid}")]
+    public async Task<IActionResult> Delete(
+        Guid id,
+        CancellationToken cancellationToken
+    )
+    {
+        await _availabilityService.DeleteAsync(
+            id,
+            cancellationToken
+        );
+
+        return NoContent();
+    }
 }
