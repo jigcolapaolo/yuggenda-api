@@ -21,6 +21,8 @@ public static class DependencyInjection
         services.AddScoped<BusinessMemberService>();
         services.AddScoped<ServiceService>();
         services.AddScoped<AvailabilityService>();
+        services.AddScoped<AvailabilityCalculationService>();
+        services.AddSingleton(TimeProvider.System);
 
         return services;
     }
