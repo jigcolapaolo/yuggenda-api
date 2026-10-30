@@ -1,6 +1,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Yuggenda.Application.Services;
 using Yuggenda.Application.Services.Authentication;
+using Yuggenda.Application.Services.Availabilities;
 using Yuggenda.Application.Services.Businesses;
 using Yuggenda.Application.Services.BusinessMembers;
 using Yuggenda.Application.Services.Users;
@@ -19,6 +20,9 @@ public static class DependencyInjection
         services.AddScoped<BusinessService>();
         services.AddScoped<BusinessMemberService>();
         services.AddScoped<ServiceService>();
+        services.AddScoped<AvailabilityService>();
+        services.AddScoped<AvailabilityCalculationService>();
+        services.AddSingleton(TimeProvider.System);
 
         return services;
     }

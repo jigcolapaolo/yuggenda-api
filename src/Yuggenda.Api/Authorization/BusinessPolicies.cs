@@ -12,4 +12,5 @@ public static class BusinessPolicies
     public const string TransferOwnership = "BusinessTransferOwnership";
     public const string ManageServices = "BusinessManageServices";
     public const string ReadServices = "BusinessReadServices";
+    public const string ManageAvailability = "BusinessManageAvailability";
 }
