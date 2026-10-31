@@ -38,5 +38,8 @@ public class CustomerConfiguration : IEntityTypeConfiguration<Customer>
             .WithMany(user => user.Customers)
             .HasForeignKey(customer => customer.UserId)
             .OnDelete(DeleteBehavior.SetNull);
+
+        builder.HasIndex(customer => new { customer.BusinessId, customer.UserId })
+            .IsUnique();
     }
 }

@@ -100,8 +100,14 @@ public class ExceptionHandlingMiddleware
                 JsonSerializer.Serialize(response)
             );
         }
-        catch (Exception)
+        catch (Exception exception)
         {
+            _logger.LogError(
+                exception,
+                "An unexpected error occurred while processing {Method} {Path}.",
+                context.Request.Method,
+                context.Request.Path);
+
             context.Response.StatusCode = StatusCodes.Status500InternalServerError;
             context.Response.ContentType = "application/json";
 
