@@ -32,4 +32,17 @@ public class BusinessCustomersController : ControllerBase
 
         return StatusCode(StatusCodes.Status201Created, customer);
     }
+
+    [HttpGet]
+    [BusinessResourceAuthorize(BusinessPolicies.ManageCustomers)]
+    public async Task<ActionResult<List<CustomerResponse>>> GetByBusinessId(
+        Guid businessId,
+        CancellationToken cancellationToken)
+    {
+        var customers = await _customerService.GetByBusinessIdAsync(
+            businessId,
+            cancellationToken);
+
+        return Ok(customers);
+    }
 }

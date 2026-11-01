@@ -80,6 +80,24 @@ public class CustomerService
         return MapToResponse(customer);
     }
 
+    public async Task<List<CustomerResponse>> GetByBusinessIdAsync(
+        Guid businessId,
+        CancellationToken cancellationToken)
+    {
+        var business = await _businessRepository.GetByIdAsync(
+            businessId,
+            cancellationToken);
+
+        if (business is null)
+            throw new KeyNotFoundException("Business not found.");
+
+        var customers = await _customerRepository.GetByBusinessIdAsync(
+            businessId,
+            cancellationToken);
+
+        return customers.Select(MapToResponse).ToList();
+    }
+
     private static CustomerResponse MapToResponse(Customer customer)
     {
         return new CustomerResponse
