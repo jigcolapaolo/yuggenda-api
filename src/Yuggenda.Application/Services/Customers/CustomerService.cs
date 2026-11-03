@@ -112,6 +112,68 @@ public class CustomerService
         return MapToResponse(customer);
     }
 
+    public async Task<CustomerResponse> UpdateAsync(
+        Guid id,
+        UpdateCustomerRequest request,
+        CancellationToken cancellationToken)
+    {
+        var customer = await _customerRepository.GetByIdAsync(
+            id,
+            cancellationToken);
+
+        if (customer is null)
+            throw new KeyNotFoundException("Customer not found.");
+
+        if (!customer.UserId.HasValue ||
+            customer.UserId.Value != _currentUser.UserId)
+        {
+            throw new UnauthorizedAccessException(
+                "You can only update your own customer information.");
+        }
+
+        var firstName = request.FirstNameProvided
+            ? request.FirstName?.Trim()
+            : customer.FirstName;
+
+        var lastName = request.LastNameProvided
+            ? request.LastName?.Trim()
+            : customer.LastName;
+
+        var email = request.EmailProvided
+            ? request.Email?.Trim()
+            : customer.Email;
+
+        var phone = request.PhoneProvided
+            ? request.Phone?.Trim()
+            : customer.Phone;
+
+        email = string.IsNullOrWhiteSpace(email) ? null : email;
+        phone = string.IsNullOrWhiteSpace(phone) ? null : phone;
+
+        if (string.IsNullOrWhiteSpace(firstName) ||
+            string.IsNullOrWhiteSpace(lastName))
+        {
+            throw new ArgumentException(
+                "First name and last name cannot be empty.");
+        }
+
+        if (email is null && phone is null)
+        {
+            throw new ArgumentException(
+                "At least one contact method (email or phone) is required.");
+        }
+
+        customer.UpdateContactInfo(
+            firstName,
+            lastName,
+            email,
+            phone);
+
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+        return MapToResponse(customer);
+    }
+
     private static CustomerResponse MapToResponse(Customer customer)
     {
         return new CustomerResponse

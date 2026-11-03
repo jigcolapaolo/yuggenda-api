@@ -41,4 +41,19 @@ public class CustomersController : ControllerBase
 
         return Ok(customer);
     }
+
+    [HttpPatch("{id:guid}")]
+    [Authorize]
+    public async Task<ActionResult<CustomerResponse>> Update(
+        Guid id,
+        UpdateCustomerRequest request,
+        CancellationToken cancellationToken)
+    {
+        var customer = await _customerService.UpdateAsync(
+            id,
+            request,
+            cancellationToken);
+
+        return Ok(customer);
+    }
 }
