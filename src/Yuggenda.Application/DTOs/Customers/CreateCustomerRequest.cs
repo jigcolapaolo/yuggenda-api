@@ -18,6 +18,4 @@ public class CreateCustomerRequest
 
     [MaxLength(50)]
     public string? Phone { get; set; }
-
-    public Guid? UserId { get; set; }
 }

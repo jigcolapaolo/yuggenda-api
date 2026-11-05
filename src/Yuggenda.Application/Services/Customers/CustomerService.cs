@@ -10,20 +10,17 @@ public class CustomerService
 {
     private readonly ICustomerRepository _customerRepository;
     private readonly IBusinessRepository _businessRepository;
-    private readonly IUserRepository _userRepository;
     private readonly IUnitOfWork _unitOfWork;
     private readonly ICurrentUser _currentUser;
 
     public CustomerService(
         ICustomerRepository customerRepository,
         IBusinessRepository businessRepository,
-        IUserRepository userRepository,
         IUnitOfWork unitOfWork,
         ICurrentUser currentUser)
     {
         _customerRepository = customerRepository;
         _businessRepository = businessRepository;
-        _userRepository = userRepository;
         _unitOfWork = unitOfWork;
         _currentUser = currentUser;
     }
@@ -40,30 +37,11 @@ public class CustomerService
         if (business is null)
             throw new KeyNotFoundException("Business not found.");
 
-        // Si se proporciona UserId, se verifica que el usuario exista
-        if (request.UserId.HasValue)
+        if (string.IsNullOrWhiteSpace(request.Email) &&
+            string.IsNullOrWhiteSpace(request.Phone))
         {
-            if (request.UserId.HasValue && request.UserId.Value != _currentUser.UserId)
-            {
-                throw new UnauthorizedAccessException(
-                    "You can only link a customer to your own user account.");
-            }
-
-            var user = await _userRepository.GetByIdAsync(
-                request.UserId.Value,
-                cancellationToken);
-
-            if (user is null)
-                throw new KeyNotFoundException("User not found.");
-
-            var alreadyExists = await _customerRepository.ExistsForUserAsync(
-                businessId,
-                request.UserId.Value,
-                cancellationToken);
-
-            if (alreadyExists)
-                throw new DomainException(
-                    "This user already has a customer record in this business.");
+            throw new DomainException(
+                "At least one contact method (email or phone) is required.");
         }
 
         var customer = new Customer(
@@ -71,8 +49,8 @@ public class CustomerService
             request.FirstName.Trim(),
             request.LastName.Trim(),
             request.Email?.Trim(),
-            request.Phone?.Trim(),
-            request.UserId);
+            request.Phone?.Trim()
+        );
 
         await _customerRepository.AddAsync(customer, cancellationToken);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
