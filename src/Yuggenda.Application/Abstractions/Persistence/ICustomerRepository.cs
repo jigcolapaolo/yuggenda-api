@@ -25,4 +25,13 @@ public interface ICustomerRepository
     Task<bool> ExistsAsync(
         Guid id,
         CancellationToken cancellationToken);
+
+
+    Task<bool> HasAppointmentsAsync(
+        Guid customerId,
+        CancellationToken cancellationToken);
+
+    Task DeleteAsync(
+        Customer customer,
+        CancellationToken cancellationToken);
 }

@@ -75,4 +75,20 @@ public class CustomerRepository : ICustomerRepository
                 customer => customer.Id == id,
                 cancellationToken);
     }
+
+    public async Task<bool> HasAppointmentsAsync(
+        Guid customerId,
+        CancellationToken cancellationToken)
+    {
+        return await _context.Appointments
+            .AnyAsync(
+                appointment => appointment.CustomerId == customerId,
+                cancellationToken);
+    }
+
+    public Task DeleteAsync(Customer customer, CancellationToken cancellationToken)
+    {
+        _context.Customers.Remove(customer);
+        return Task.CompletedTask;
+    }
 }

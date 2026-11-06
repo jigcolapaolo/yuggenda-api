@@ -56,4 +56,27 @@ public class CustomersController : ControllerBase
 
         return Ok(customer);
     }
+
+    [HttpDelete("{id:guid}")]
+    [Authorize]
+    public async Task<IActionResult> Delete(
+        Guid id,
+        CancellationToken cancellationToken)
+    {
+        var customer = await _customerService.GetByIdAsync(
+            id,
+            cancellationToken);
+
+        var authorizationResult = await _authorizationService.AuthorizeAsync(
+            User,
+            customer.BusinessId,
+            BusinessPolicies.ManageCustomers);
+
+        if (!authorizationResult.Succeeded)
+            return Forbid();
+
+        await _customerService.DeleteAsync(id, cancellationToken);
+
+        return NoContent();
+    }
 }

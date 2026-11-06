@@ -152,6 +152,29 @@ public class CustomerService
         return MapToResponse(customer);
     }
 
+    public async Task DeleteAsync(
+        Guid id,
+        CancellationToken cancellationToken)
+    {
+        var customer = await _customerRepository.GetByIdAsync(
+            id,
+            cancellationToken);
+
+        if (customer is null)
+            throw new KeyNotFoundException("Customer not found.");
+
+        var hasAppointments = await _customerRepository.HasAppointmentsAsync(
+            id,
+            cancellationToken);
+
+        if (hasAppointments)
+            throw new DomainException(
+                "Cannot delete a customer with associated appointments.");
+
+        await _customerRepository.DeleteAsync(customer, cancellationToken);
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
+    }
+
     private static CustomerResponse MapToResponse(Customer customer)
     {
         return new CustomerResponse
