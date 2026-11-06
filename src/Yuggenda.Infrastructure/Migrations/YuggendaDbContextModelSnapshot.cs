@@ -236,9 +236,10 @@ namespace Yuggenda.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("BusinessId");
-
                     b.HasIndex("UserId");
+
+                    b.HasIndex("BusinessId", "UserId")
+                        .IsUnique();
 
                     b.ToTable("Customers");
                 });

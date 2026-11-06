@@ -35,4 +35,26 @@ public class Customer
         Phone = phone;
         CreatedAt = DateTime.UtcNow;
     }
+
+    public void UpdateContactInfo(
+        string firstName,
+        string lastName,
+        string? email,
+        string? phone)
+    {
+        FirstName = firstName;
+        LastName = lastName;
+        Email = email;
+        Phone = phone;
+        UpdatedAt = DateTime.UtcNow;
+    }
+
+    public void LinkToUser(Guid userId)
+    {
+        if (UserId.HasValue)
+            throw new InvalidOperationException("Customer is already linked to a user.");
+
+        UserId = userId;
+        UpdatedAt = DateTime.UtcNow;
+    }
 }

@@ -4,6 +4,7 @@ using Yuggenda.Application.Services.Authentication;
 using Yuggenda.Application.Services.Availabilities;
 using Yuggenda.Application.Services.Businesses;
 using Yuggenda.Application.Services.BusinessMembers;
+using Yuggenda.Application.Services.Customers;
 using Yuggenda.Application.Services.Users;
 
 namespace Yuggenda.Application;
@@ -23,6 +24,7 @@ public static class DependencyInjection
         services.AddScoped<AvailabilityService>();
         services.AddScoped<AvailabilityCalculationService>();
         services.AddSingleton(TimeProvider.System);
+        services.AddScoped<CustomerService>();
 
         return services;
     }

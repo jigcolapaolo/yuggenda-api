@@ -13,4 +13,5 @@ public static class BusinessPolicies
     public const string ManageServices = "BusinessManageServices";
     public const string ReadServices = "BusinessReadServices";
     public const string ManageAvailability = "BusinessManageAvailability";
+    public const string ManageCustomers = "ManageCustomers";
 }
