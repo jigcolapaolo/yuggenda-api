@@ -34,4 +34,9 @@ public interface ICustomerRepository
     Task DeleteAsync(
         Customer customer,
         CancellationToken cancellationToken);
+
+    Task<Customer?> GetByBusinessAndUserIdAsync(
+        Guid businessId,
+        Guid userId,
+        CancellationToken cancellationToken);
 }

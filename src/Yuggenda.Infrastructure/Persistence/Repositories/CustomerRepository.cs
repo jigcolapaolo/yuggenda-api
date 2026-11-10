@@ -91,4 +91,17 @@ public class CustomerRepository : ICustomerRepository
         _context.Customers.Remove(customer);
         return Task.CompletedTask;
     }
+
+    public async Task<Customer?> GetByBusinessAndUserIdAsync(
+        Guid businessId,
+        Guid userId,
+        CancellationToken cancellationToken)
+    {
+        return await _context.Customers
+            .FirstOrDefaultAsync(
+                customer =>
+                    customer.BusinessId == businessId &&
+                    customer.UserId == userId,
+                cancellationToken);
+    }
 }
