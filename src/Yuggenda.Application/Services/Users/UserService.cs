@@ -32,7 +32,10 @@ public class UserService
         CancellationToken cancellationToken
     )
     {
-        var user = await _userRepository.GetByIdAsync(_currentUser.UserId, cancellationToken);
+        if (_currentUser.UserId is not Guid userId)
+            throw new UnauthorizedAccessException("Authentication is required.");
+        
+        var user = await _userRepository.GetByIdAsync(userId, cancellationToken);
 
         if (user is null)
         {
@@ -54,8 +57,11 @@ public class UserService
         CancellationToken cancellationToken
     )
     {
+        if (_currentUser.UserId is not Guid userId)
+            throw new UnauthorizedAccessException("Authentication is required.");
+
         var user = await _userRepository.GetByIdAsync(
-            _currentUser.UserId,
+            userId,
             cancellationToken
         );
 
@@ -106,8 +112,12 @@ public class UserService
         CancellationToken cancellationToken
     )
     {
+
+        if (_currentUser.UserId is not Guid userId)
+            throw new UnauthorizedAccessException("Authentication is required.");
+
         var user = await _userRepository.GetByIdAsync(
-            _currentUser.UserId,
+            userId,
             cancellationToken
         );
 

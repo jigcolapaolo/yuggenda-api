@@ -72,7 +72,10 @@ public class AuthController : ControllerBase
     [HttpPost("logout")]
     public async Task<IActionResult> Logout(LogoutRequest request, CancellationToken cancellationToken)
     {
-        await _refreshTokenService.LogoutAsync(_currentUser.UserId, request, cancellationToken);
+        if (_currentUser.UserId is not Guid userId)
+            throw new UnauthorizedAccessException("Authentication is required.");
+        
+        await _refreshTokenService.LogoutAsync(userId, request, cancellationToken);
 
         return NoContent();
     }
@@ -81,7 +84,10 @@ public class AuthController : ControllerBase
     [HttpPost("logout-all")]
     public async Task<IActionResult> LogoutAll(CancellationToken cancellationToken)
     {
-        await _refreshTokenService.LogoutAllAsync(_currentUser.UserId, cancellationToken);
+        if (_currentUser.UserId is not Guid userId)
+            throw new UnauthorizedAccessException("Authentication is required.");
+
+        await _refreshTokenService.LogoutAllAsync(userId, cancellationToken);
 
         return NoContent();
     }

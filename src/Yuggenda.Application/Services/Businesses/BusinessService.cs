@@ -39,9 +39,12 @@ public class BusinessService
             request.Phone
         );
 
+        if (_currentUser.UserId is not Guid userId)
+            throw new UnauthorizedAccessException("Authentication is required.");
+
         var owner = new BusinessMember(
             business.Id,
-            _currentUser.UserId,
+            userId,
             BusinessRole.Owner
         );
 
@@ -108,8 +111,11 @@ public class BusinessService
 
     public async Task<List<BusinessResponse>> GetMineAsync(CancellationToken cancellationToken)
     {
+        if (_currentUser.UserId is not Guid userId)
+            throw new UnauthorizedAccessException("Authentication is required.");
+
         var businesses = await _businessRepository.GetByUserIdAsync(
-            _currentUser.UserId,
+            userId,
             cancellationToken
         );
 

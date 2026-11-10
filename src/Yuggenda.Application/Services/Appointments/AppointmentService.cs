@@ -38,6 +38,94 @@ public class AppointmentService
         _unitOfWork = unitOfWork;
     }
 
+    public async Task<AppointmentResponse> CreateAsync(
+        Guid businessId,
+        CreateAppointmentRequest request,
+        CancellationToken cancellationToken)
+    {
+        var business = await _businessRepository.GetByIdAsync(
+            businessId,
+            cancellationToken
+        );
+
+        if (business is null)
+            throw new KeyNotFoundException("Business not found.");
+
+        var timeZone = TimeZoneInfo.FindSystemTimeZoneById(business.Timezone);
+
+        var localStartTime = TimeZoneInfo.ConvertTime(
+            request.StartTime,
+            timeZone
+        ).DateTime;
+
+        var date = DateOnly.FromDateTime(localStartTime);
+
+        var availableSlots = await _availabilityCalculationService
+            .GetAvailableSlotsForServiceAsync(
+                businessId,
+                request.ServiceId,
+                date,
+                cancellationToken,
+                request.BusinessMemberId
+            );
+
+        var requestedSlot = availableSlots.FirstOrDefault(slot =>
+            slot.StartTime == localStartTime
+        );
+
+        if (requestedSlot is null)
+            throw new DomainException("The requested time slot is not available.");
+
+        var startUtc = TimeZoneInfo.ConvertTimeToUtc(
+            DateTime.SpecifyKind(requestedSlot.StartTime, DateTimeKind.Unspecified),
+            timeZone
+        );
+
+        var endUtc = TimeZoneInfo.ConvertTimeToUtc(
+            DateTime.SpecifyKind(requestedSlot.EndTime, DateTimeKind.Unspecified),
+            timeZone
+        );
+
+        var startTime = new DateTimeOffset(startUtc);
+        var endTime = new DateTimeOffset(endUtc);
+
+        var hasOverlap = await _appointmentRepository
+            .HasOverlappingAppointmentAsync(
+                request.BusinessMemberId,
+                startTime,
+                endTime,
+                cancellationToken
+            );
+
+        if (hasOverlap)
+            throw new DomainException("The requested time slot is already booked.");
+
+        var customer = await ResolveCustomerAsync(
+            businessId,
+            request,
+            cancellationToken
+        );
+
+        var appointment = new Appointment(
+            businessId,
+            customer.Id,
+            request.ServiceId,
+            request.BusinessMemberId,
+            startTime,
+            endTime,
+            request.Notes
+        );
+
+        await _appointmentRepository.AddAsync(
+            appointment,
+            cancellationToken
+        );
+
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+        return MapToResponse(appointment);
+    }
+
     private async Task<Customer> ResolveCustomerAsync(
         Guid businessId,
         CreateAppointmentRequest request,

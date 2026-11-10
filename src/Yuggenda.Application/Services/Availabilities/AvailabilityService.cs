@@ -46,10 +46,13 @@ public class AvailabilityService
             );
         }
 
+        if (_currentUser.UserId is not Guid userId)
+            throw new UnauthorizedAccessException("Authentication is required.");
+
         var currentMember =
             await _businessMemberRepository.GetByBusinessAndUserIdAsync(
                 businessId,
-                _currentUser.UserId,
+                userId,
                 cancellationToken
             );
 
@@ -166,10 +169,13 @@ public class AvailabilityService
             throw new KeyNotFoundException("Business member not found.");
         }
 
+        if (_currentUser.UserId is not Guid userId)
+            throw new UnauthorizedAccessException("Authentication is required.");
+
         var currentMember =
             await _businessMemberRepository.GetByBusinessAndUserIdAsync(
                 businessMember.BusinessId,
-                _currentUser.UserId,
+                userId,
                 cancellationToken
             );
 
@@ -275,10 +281,13 @@ public class AvailabilityService
             throw new KeyNotFoundException("Business member not found.");
         }
 
+        if (_currentUser.UserId is not Guid userId)
+            throw new UnauthorizedAccessException("Authentication is required.");
+
         var currentMember =
             await _businessMemberRepository.GetByBusinessAndUserIdAsync(
                 businessMember.BusinessId,
-                _currentUser.UserId,
+                userId,
                 cancellationToken
             );
 
