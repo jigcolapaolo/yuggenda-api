@@ -203,6 +203,55 @@ public class AppointmentService
         };
     }
 
+    public async Task<AppointmentResponse> GetByIdAsync(
+        Guid appointmentId,
+        CancellationToken cancellationToken)
+    {
+        if (_currentUser.UserId is not Guid userId)
+            throw new UnauthorizedAccessException("Authentication is required.");
+
+        var appointment = await _appointmentRepository.GetByIdAsync(
+            appointmentId,
+            cancellationToken);
+
+        if (appointment is null)
+            throw new KeyNotFoundException("Appointment not found.");
+
+        var businessMember = await _businessMemberRepository
+            .GetByBusinessAndUserIdAsync(
+                appointment.BusinessId,
+                userId,
+                cancellationToken);
+
+        if (businessMember is not null)
+        {
+            switch (businessMember.Role)
+            {
+                case BusinessRole.Owner:
+                case BusinessRole.Admin:
+                    return MapToResponse(appointment);
+
+                case BusinessRole.Staff:
+                    if (appointment.BusinessMemberId == businessMember.Id)
+                        return MapToResponse(appointment);
+
+                    throw new UnauthorizedAccessException(
+                        "You cannot access this appointment.");
+            }
+        }
+
+        var customer = await _customerRepository.GetByBusinessAndUserIdAsync(
+            appointment.BusinessId,
+            userId,
+            cancellationToken);
+
+        if (customer is not null && appointment.CustomerId == customer.Id)
+            return MapToResponse(appointment);
+
+        throw new UnauthorizedAccessException(
+            "You cannot access this appointment.");
+    }
+
     private async Task<Customer> ResolveCustomerAsync(
         Guid businessId,
         CreateAppointmentRequest request,
