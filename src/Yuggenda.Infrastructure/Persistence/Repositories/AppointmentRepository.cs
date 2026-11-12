@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Yuggenda.Application.Abstractions.Persistence;
+using Yuggenda.Application.DTOs.Appointments;
 using Yuggenda.Domain.Entities;
 using Yuggenda.Domain.Enums;
 using Yuggenda.Infrastructure.Persistence.Context;
@@ -48,5 +49,70 @@ public class AppointmentRepository : IAppointmentRepository
                 appointment.StartTime < endTime &&
                 appointment.EndTime > startTime,
             cancellationToken);
+    }
+
+    public async Task<(List<Appointment> Items, int TotalCount)> GetByBusinessIdAsync(
+        Guid businessId,
+        AppointmentQueryRequest query,
+        Guid? businessMemberId,
+        Guid? customerId,
+        CancellationToken cancellationToken)
+    {
+        var appointments = _context.Appointments
+            .AsNoTracking()
+            .Where(appointment => appointment.BusinessId == businessId);
+
+        if (businessMemberId.HasValue)
+        {
+            appointments = appointments.Where(
+                appointment => appointment.BusinessMemberId == businessMemberId.Value);
+        }
+
+        if (customerId.HasValue)
+        {
+            appointments = appointments.Where(
+                appointment => appointment.CustomerId == customerId.Value);
+        }
+
+        if (query.From.HasValue)
+        {
+            appointments = appointments.Where(
+                appointment => appointment.StartTime >= query.From.Value);
+        }
+
+        if (query.To.HasValue)
+        {
+            appointments = appointments.Where(
+                appointment => appointment.StartTime <= query.To.Value);
+        }
+
+        if (query.Status.HasValue)
+        {
+            appointments = appointments.Where(
+                appointment => appointment.Status == query.Status.Value);
+        }
+
+        if (query.BusinessMemberId.HasValue)
+        {
+            appointments = appointments.Where(
+                appointment => appointment.BusinessMemberId == query.BusinessMemberId.Value);
+        }
+
+        if (query.CustomerId.HasValue)
+        {
+            appointments = appointments.Where(
+                appointment => appointment.CustomerId == query.CustomerId.Value);
+        }
+
+        var totalCount = await appointments.CountAsync(cancellationToken);
+
+        var items = await appointments
+            .OrderBy(appointment => appointment.StartTime)
+            .ThenBy(appointment => appointment.Id)
+            .Skip((query.Page - 1) * query.PageSize)
+            .Take(query.PageSize)
+            .ToListAsync(cancellationToken);
+
+        return (items, totalCount);
     }
 }

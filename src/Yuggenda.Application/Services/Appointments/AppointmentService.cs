@@ -3,6 +3,7 @@ using Yuggenda.Application.Abstractions.Persistence;
 using Yuggenda.Application.DTOs.Appointments;
 using Yuggenda.Application.Services.Availabilities;
 using Yuggenda.Domain.Entities;
+using Yuggenda.Domain.Enums;
 using Yuggenda.Domain.Exceptions;
 
 namespace Yuggenda.Application.Services.Appointments;
@@ -17,6 +18,7 @@ public class AppointmentService
     private readonly AvailabilityCalculationService _availabilityCalculationService;
     private readonly ICurrentUser _currentUser;
     private readonly IUnitOfWork _unitOfWork;
+    private readonly IBusinessMemberRepository _businessMemberRepository;
 
     public AppointmentService(
         IAppointmentRepository appointmentRepository,
@@ -26,7 +28,8 @@ public class AppointmentService
         IBusinessRepository businessRepository,
         AvailabilityCalculationService availabilityCalculationService,
         ICurrentUser currentUser,
-        IUnitOfWork unitOfWork)
+        IUnitOfWork unitOfWork,
+        IBusinessMemberRepository businessMemberRepository)
     {
         _appointmentRepository = appointmentRepository;
         _customerRepository = customerRepository;
@@ -36,6 +39,7 @@ public class AppointmentService
         _availabilityCalculationService = availabilityCalculationService;
         _currentUser = currentUser;
         _unitOfWork = unitOfWork;
+        _businessMemberRepository = businessMemberRepository;
     }
 
     public async Task<AppointmentResponse> CreateAsync(
@@ -124,6 +128,79 @@ public class AppointmentService
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         return MapToResponse(appointment);
+    }
+
+    public async Task<AppointmentListResponse> GetByBusinessIdAsync(
+        Guid businessId,
+        AppointmentQueryRequest query,
+        CancellationToken cancellationToken)
+    {
+        if (query.From.HasValue && query.To.HasValue &&
+            query.From.Value > query.To.Value)
+        {
+            throw new ArgumentException("'From' cannot be later than 'To'.");
+        }
+
+        var business = await _businessRepository.GetByIdAsync(
+            businessId, cancellationToken);
+
+        if (business is null)
+            throw new KeyNotFoundException("Business not found.");
+
+        if (_currentUser.UserId is not Guid userId)
+            throw new UnauthorizedAccessException("Authentication is required.");
+
+        Guid? businessMemberId = null;
+        Guid? customerId = null;
+
+        var businessMember = await _businessMemberRepository
+            .GetByBusinessAndUserIdAsync(businessId, userId, cancellationToken);
+
+        if (businessMember is not null)
+        {
+            switch (businessMember.Role)
+            {
+                case BusinessRole.Owner:
+                case BusinessRole.Admin:
+                    break;
+
+                case BusinessRole.Staff:
+                    businessMemberId = businessMember.Id;
+                    break;
+
+                default:
+                    throw new UnauthorizedAccessException("Invalid business role.");
+            }
+        }
+        else
+        {
+            var customer = await _customerRepository
+                .GetByBusinessAndUserIdAsync(businessId, userId, cancellationToken);
+
+            if (customer is null)
+                throw new UnauthorizedAccessException(
+                    "You do not have access to this business's appointments.");
+
+            customerId = customer.Id;
+        }
+
+        var (items, totalCount) = await _appointmentRepository
+            .GetByBusinessIdAsync(
+                businessId,
+                query,
+                businessMemberId,
+                customerId,
+                cancellationToken);
+
+        return new AppointmentListResponse
+        {
+            Items = items.Select(MapToResponse).ToList(),
+            TotalCount = totalCount,
+            Page = query.Page,
+            PageSize = query.PageSize,
+            TotalPages = (int)Math.Ceiling(
+                (double)totalCount / query.PageSize)
+        };
     }
 
     private async Task<Customer> ResolveCustomerAsync(

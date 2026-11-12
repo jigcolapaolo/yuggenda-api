@@ -35,4 +35,19 @@ public class BusinessAppointmentsController : ControllerBase
             appointment
         );
     }
+
+    [Authorize]
+    [HttpGet]
+    public async Task<ActionResult<AppointmentListResponse>> GetByBusinessId(
+        Guid businessId,
+        [FromQuery] AppointmentQueryRequest query,
+        CancellationToken cancellationToken)
+    {
+        var appointments = await _appointmentService.GetByBusinessIdAsync(
+            businessId,
+            query,
+            cancellationToken);
+
+        return Ok(appointments);
+    }
 }
