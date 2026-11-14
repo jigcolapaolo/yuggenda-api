@@ -252,6 +252,62 @@ public class AppointmentService
             "You cannot access this appointment.");
     }
 
+    public async Task<AppointmentResponse> CancelAsync(
+        Guid appointmentId,
+        CancellationToken cancellationToken)
+    {
+        if (_currentUser.UserId is not Guid userId)
+            throw new UnauthorizedAccessException("Authentication is required.");
+
+        var appointment = await _appointmentRepository.GetByIdAsync(
+            appointmentId,
+            cancellationToken);
+
+        if (appointment is null)
+            throw new KeyNotFoundException("Appointment not found.");
+
+        var businessMember = await _businessMemberRepository
+            .GetByBusinessAndUserIdAsync(
+                appointment.BusinessId,
+                userId,
+                cancellationToken);
+
+        var hasPermission = false;
+
+        if (businessMember is not null)
+        {
+            hasPermission = businessMember.Role switch
+            {
+                BusinessRole.Owner => true,
+                BusinessRole.Admin => true,
+                BusinessRole.Staff =>
+                    appointment.BusinessMemberId == businessMember.Id,
+                _ => false
+            };
+        }
+        else
+        {
+            var customer = await _customerRepository
+                .GetByBusinessAndUserIdAsync(
+                    appointment.BusinessId,
+                    userId,
+                    cancellationToken);
+
+            hasPermission = customer is not null &&
+                            appointment.CustomerId == customer.Id;
+        }
+
+        if (!hasPermission)
+            throw new UnauthorizedAccessException(
+                "You cannot cancel this appointment.");
+
+        appointment.Cancel();
+
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+        return MapToResponse(appointment);
+    }
+
     private async Task<Customer> ResolveCustomerAsync(
         Guid businessId,
         CreateAppointmentRequest request,

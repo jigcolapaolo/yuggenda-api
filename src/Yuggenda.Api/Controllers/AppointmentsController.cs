@@ -28,4 +28,16 @@ public class AppointmentsController : ControllerBase
 
         return Ok(appointment);
     }
+
+    [HttpPatch("{id:guid}/cancel")]
+    public async Task<ActionResult<AppointmentResponse>> Cancel(
+        Guid id,
+        CancellationToken cancellationToken)
+    {
+        var appointment = await _appointmentService.CancelAsync(
+            id,
+            cancellationToken);
+
+        return Ok(appointment);
+    }
 }
