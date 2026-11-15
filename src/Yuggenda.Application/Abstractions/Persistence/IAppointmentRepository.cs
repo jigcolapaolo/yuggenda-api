@@ -19,7 +19,8 @@ public interface IAppointmentRepository
         Guid businessMemberId,
         DateTimeOffset startTime,
         DateTimeOffset endTime,
-        CancellationToken cancellationToken
+        CancellationToken cancellationToken,
+        Guid? excludeAppointmentId = null
     );
 
     Task<(List<Appointment> Items, int TotalCount)> GetByBusinessIdAsync(

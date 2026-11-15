@@ -62,4 +62,18 @@ public class AppointmentsController : ControllerBase
 
         return Ok(appointment);
     }
+
+    [HttpPatch("{id:guid}/reschedule")]
+    public async Task<ActionResult<AppointmentResponse>> Reschedule(
+        Guid id,
+        [FromBody] RescheduleAppointmentRequest request,
+        CancellationToken cancellationToken)
+    {
+        var appointment = await _appointmentService.RescheduleAsync(
+            id,
+            request,
+            cancellationToken);
+
+        return Ok(appointment);
+    }
 }

@@ -39,16 +39,23 @@ public class AppointmentRepository : IAppointmentRepository
         Guid businessMemberId,
         DateTimeOffset startTime,
         DateTimeOffset endTime,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken,
+        Guid? excludeAppointmentId = null)
     {
-        return await _context.Appointments.AnyAsync(
-            appointment =>
-                appointment.BusinessMemberId == businessMemberId &&
-                (appointment.Status == AppointmentStatus.Scheduled ||
-                 appointment.Status == AppointmentStatus.Confirmed) &&
-                appointment.StartTime < endTime &&
-                appointment.EndTime > startTime,
-            cancellationToken);
+        var query = _context.Appointments
+            .Where(a =>
+                a.BusinessMemberId == businessMemberId &&
+                (a.Status == AppointmentStatus.Scheduled ||
+                a.Status == AppointmentStatus.Confirmed) &&
+                a.StartTime < endTime &&
+                a.EndTime > startTime);
+
+        if (excludeAppointmentId.HasValue)
+        {
+            query = query.Where(a => a.Id != excludeAppointmentId.Value);
+        }
+
+        return await query.AnyAsync(cancellationToken);
     }
 
     public async Task<(List<Appointment> Items, int TotalCount)> GetByBusinessIdAsync(

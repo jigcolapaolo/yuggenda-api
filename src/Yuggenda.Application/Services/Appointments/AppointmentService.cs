@@ -1,6 +1,7 @@
 using Yuggenda.Application.Abstractions.Authentication;
 using Yuggenda.Application.Abstractions.Persistence;
 using Yuggenda.Application.DTOs.Appointments;
+using Yuggenda.Application.Exceptions;
 using Yuggenda.Application.Services.Availabilities;
 using Yuggenda.Domain.Entities;
 using Yuggenda.Domain.Enums;
@@ -246,6 +247,72 @@ public class AppointmentService
             appointment, userId, cancellationToken);
 
         appointment.Complete();
+
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+        return MapToResponse(appointment);
+    }
+
+    public async Task<AppointmentResponse> RescheduleAsync(
+        Guid appointmentId,
+        RescheduleAppointmentRequest request,
+        CancellationToken cancellationToken)
+    {
+        var userId = GetAuthenticatedUserId();
+
+        var appointment = await GetAppointmentOrThrowAsync(
+            appointmentId, cancellationToken);
+
+        await EnsureAppointmentAccessAsync(
+            appointment, userId, cancellationToken);
+
+        var business = await _businessRepository.GetByIdAsync(
+            appointment.BusinessId, cancellationToken)
+            ?? throw new KeyNotFoundException("Business not found.");
+
+        var timeZone = TimeZoneInfo.FindSystemTimeZoneById(business.Timezone);
+
+        var localStartTime = TimeZoneInfo.ConvertTime(
+            request.StartTime,
+            timeZone);
+
+        var date = DateOnly.FromDateTime(localStartTime.DateTime);
+
+        var slots = await _availabilityCalculationService
+            .GetAvailableSlotsForServiceAsync(
+                appointment.BusinessId,
+                appointment.ServiceId,
+                date,
+                cancellationToken,
+                appointment.BusinessMemberId);
+
+        var selectedSlot = slots.FirstOrDefault(slot =>
+            slot.StartTime == localStartTime.DateTime);
+
+        if (selectedSlot is null)
+            throw new ConflictException("The selected time slot is not available.");
+
+        var startTimeUtc = TimeZoneInfo.ConvertTimeToUtc(
+            selectedSlot.StartTime, timeZone);
+
+        var endTimeUtc = TimeZoneInfo.ConvertTimeToUtc(
+            selectedSlot.EndTime, timeZone);
+
+        var newStartTime = new DateTimeOffset(startTimeUtc);
+        var newEndTime = new DateTimeOffset(endTimeUtc);
+
+        var hasConflict = await _appointmentRepository
+            .HasOverlappingAppointmentAsync(
+                appointment.BusinessMemberId,
+                newStartTime,
+                newEndTime,
+                cancellationToken,
+                appointment.Id);
+
+        if (hasConflict)
+            throw new ConflictException("The selected time conflicts with another appointment.");
+
+        appointment.Reschedule(newStartTime, newEndTime);
 
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
