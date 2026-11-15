@@ -40,4 +40,26 @@ public class AppointmentsController : ControllerBase
 
         return Ok(appointment);
     }
+
+    [HttpPatch("{id:guid}/confirm")]
+    public async Task<ActionResult<AppointmentResponse>> Confirm(
+        Guid id,
+        CancellationToken cancellationToken)
+    {
+        var appointment = await _appointmentService.ConfirmAsync(
+            id, cancellationToken);
+
+        return Ok(appointment);
+    }
+
+    [HttpPatch("{id:guid}/complete")]
+    public async Task<ActionResult<AppointmentResponse>> Complete(
+        Guid id,
+        CancellationToken cancellationToken)
+    {
+        var appointment = await _appointmentService.CompleteAsync(
+            id, cancellationToken);
+
+        return Ok(appointment);
+    }
 }
