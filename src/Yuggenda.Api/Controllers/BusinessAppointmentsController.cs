@@ -30,10 +30,7 @@ public class BusinessAppointmentsController : ControllerBase
             cancellationToken
         );
 
-        return Created(
-            $"/businesses/{businessId}/appointments/{appointment.Id}",
-            appointment
-        );
+        return Created($"/appointments/{appointment.Id}", appointment);
     }
 
     [Authorize]
