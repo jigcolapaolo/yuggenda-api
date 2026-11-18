@@ -12,19 +12,19 @@ public class CurrentUser : ICurrentUser
     {
         _httpContextAccessor = httpContextAccessor;
     }
-
-    public Guid UserId
+    public Guid? UserId
     {
         get
         {
-            var userId = _httpContextAccessor.HttpContext?
-                .User
-                .FindFirstValue(JwtRegisteredClaimNames.Sub);
-            
+            var user = _httpContextAccessor.HttpContext?.User;
+
+            if (user?.Identity?.IsAuthenticated != true)
+                return null;
+
+            var userId = user.FindFirstValue(JwtRegisteredClaimNames.Sub);
+
             if (!Guid.TryParse(userId, out var parsedUserId))
-            {
                 throw new UnauthorizedAccessException("Invalid user identity.");
-            }
 
             return parsedUserId;
         }

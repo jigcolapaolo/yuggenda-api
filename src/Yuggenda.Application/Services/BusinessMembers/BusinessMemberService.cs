@@ -190,7 +190,8 @@ public class BusinessMemberService
         CancellationToken cancellationToken
     )
     {
-        var userId = _currentUser.UserId;
+        if (_currentUser.UserId is not Guid userId)
+            throw new UnauthorizedAccessException("Authentication is required.");
 
         var member = await _businessMemberRepository.GetByBusinessAndUserIdAsync(
             businessId,
@@ -223,9 +224,12 @@ public class BusinessMemberService
         CancellationToken cancellationToken
     )
     {
+        if (_currentUser.UserId is not Guid userId)
+            throw new UnauthorizedAccessException("Authentication is required.");
+
         var currentOwner = await _businessMemberRepository.GetByBusinessAndUserIdAsync(
             businessId,
-            _currentUser.UserId,
+            userId,
             cancellationToken
         );
 

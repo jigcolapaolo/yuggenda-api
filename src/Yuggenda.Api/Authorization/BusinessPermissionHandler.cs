@@ -24,10 +24,13 @@ public sealed class BusinessPermissionHandler(
         if (context.Resource is not Guid businessId)
             return;
 
+        if (currentUser.UserId is not Guid userId)
+            throw new UnauthorizedAccessException("Authentication is required.");
+
         var member =
             await businessMemberRepository.GetByBusinessAndUserIdAsync(
                 businessId,
-                currentUser.UserId,
+                userId,
                 httpContextAccessor.HttpContext?.RequestAborted
                     ?? CancellationToken.None);
 

@@ -1,4 +1,5 @@
 using Yuggenda.Domain.Enums;
+using Yuggenda.Domain.Exceptions;
 
 namespace Yuggenda.Domain.Entities;
 
@@ -31,6 +32,14 @@ public class Appointment
         string? notes = null
     )
     {
+        if (startTime <= DateTimeOffset.UtcNow)
+            throw new DomainException(
+                "Appointments cannot be created in the past.");
+
+        if (endTime <= startTime)
+            throw new DomainException(
+                "End time must be after start time.");
+
         Id = Guid.NewGuid();
         BusinessId = businessId;
         CustomerId = customerId;
@@ -41,5 +50,77 @@ public class Appointment
         Status = AppointmentStatus.Scheduled;
         Notes = notes;
         CreatedAt = DateTime.UtcNow;
+    }
+
+    public void Confirm()
+    {
+        if (Status != AppointmentStatus.Scheduled)
+            throw new DomainException(
+                "Only scheduled appointments can be confirmed.");
+
+        Status = AppointmentStatus.Confirmed;
+        UpdatedAt = DateTime.UtcNow;
+    }
+
+    public void Complete()
+    {
+        if (Status != AppointmentStatus.Confirmed)
+            throw new DomainException(
+                "Only confirmed appointments can be completed.");
+
+        if (EndTime > DateTimeOffset.UtcNow)
+            throw new DomainException(
+                "An appointment cannot be completed before it ends.");
+
+        Status = AppointmentStatus.Completed;
+        UpdatedAt = DateTime.UtcNow;
+    }
+
+    public void Cancel()
+    {
+        if (Status is AppointmentStatus.Completed or AppointmentStatus.Cancelled)
+            throw new DomainException(
+                "Completed or cancelled appointments cannot be cancelled.");
+
+        Status = AppointmentStatus.Cancelled;
+        UpdatedAt = DateTime.UtcNow;
+    }
+
+    public void Reschedule(
+        DateTimeOffset startTime,
+        DateTimeOffset endTime)
+    {
+        if (Status is AppointmentStatus.Completed or AppointmentStatus.Cancelled)
+            throw new DomainException(
+                "Completed or cancelled appointments cannot be rescheduled.");
+
+        if (startTime <= DateTimeOffset.UtcNow)
+            throw new DomainException(
+                "Appointments cannot be rescheduled to the past.");
+
+        if (endTime <= startTime)
+            throw new DomainException(
+                "End time must be after start time.");
+
+        StartTime = startTime;
+        EndTime = endTime;
+        UpdatedAt = DateTime.UtcNow;
+    }
+
+    public void ChangeService(Guid serviceId, DateTimeOffset endTime)
+    {
+        if (Status is AppointmentStatus.Completed or AppointmentStatus.Cancelled)
+            throw new DomainException(
+                "Completed or cancelled appointments cannot change service.");
+
+        if (serviceId == Guid.Empty)
+            throw new DomainException("Service ID is required.");
+
+        if (endTime <= StartTime)
+            throw new DomainException("End time must be after start time.");
+
+        ServiceId = serviceId;
+        EndTime = endTime;
+        UpdatedAt = DateTime.UtcNow;
     }
 }
