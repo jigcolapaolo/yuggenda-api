@@ -1,6 +1,7 @@
-using System.Text.Json;
 using Yuggenda.Application.Exceptions;
 using Yuggenda.Domain.Exceptions;
+using Microsoft.AspNetCore.Mvc;
+using System.Diagnostics;
 
 namespace Yuggenda.Api.Middleware;
 
@@ -25,80 +26,43 @@ public class ExceptionHandlingMiddleware
         }
         catch (KeyNotFoundException exception)
         {
-            context.Response.StatusCode = StatusCodes.Status404NotFound;
-            context.Response.ContentType = "application/json";
-
-            var response = new
-            {
-                title = "Not Found",
-                status = StatusCodes.Status404NotFound,
-                detail = exception.Message
-            };
-
-            await context.Response.WriteAsync(
-                JsonSerializer.Serialize(response));
-
+            await WriteProblemDetailsAsync(
+                context,
+                StatusCodes.Status404NotFound,
+                "Not Found",
+                exception.Message);
         }
         catch (ConflictException exception)
         {
-            context.Response.StatusCode = StatusCodes.Status409Conflict;
-            context.Response.ContentType = "application/json";
-
-            var response = new
-            {
-                title = "Conflict",
-                status = StatusCodes.Status409Conflict,
-                detail = exception.Message
-            };
-
-            await context.Response.WriteAsync(
-                JsonSerializer.Serialize(response));
+            await WriteProblemDetailsAsync(
+                context,
+                StatusCodes.Status409Conflict,
+                "Conflict",
+                exception.Message);
         }
         catch (UnauthorizedAccessException exception)
         {
-            context.Response.StatusCode = StatusCodes.Status401Unauthorized;
-            context.Response.ContentType = "application/json";
-
-            var response = new
-            {
-                title = "Unauthorized",
-                status = StatusCodes.Status401Unauthorized,
-                detail = exception.Message
-            };
-
-            await context.Response.WriteAsync(
-                JsonSerializer.Serialize(response));
+            await WriteProblemDetailsAsync(
+                context,
+                StatusCodes.Status401Unauthorized,
+                "Unauthorized",
+                exception.Message);
         }
         catch (ArgumentException exception)
         {
-            context.Response.StatusCode = StatusCodes.Status400BadRequest;
-            context.Response.ContentType = "application/json";
-
-            var response = new
-            {
-                title = "Bad Request",
-                status = StatusCodes.Status400BadRequest,
-                detail = exception.Message
-            };
-
-            await context.Response.WriteAsync(
-                JsonSerializer.Serialize(response));
+            await WriteProblemDetailsAsync(
+                context,
+                StatusCodes.Status400BadRequest,
+                "Bad Request",
+                exception.Message);
         }
         catch (DomainException exception)
         {
-            context.Response.StatusCode = StatusCodes.Status409Conflict;
-            context.Response.ContentType = "application/json";
-
-            var response = new
-            {
-                title = "Conflict",
-                status = StatusCodes.Status409Conflict,
-                detail = exception.Message
-            };
-
-            await context.Response.WriteAsync(
-                JsonSerializer.Serialize(response)
-            );
+            await WriteProblemDetailsAsync(
+                context,
+                StatusCodes.Status409Conflict,
+                "Conflict",
+                exception.Message);
         }
         catch (Exception exception)
         {
@@ -108,17 +72,34 @@ public class ExceptionHandlingMiddleware
                 context.Request.Method,
                 context.Request.Path);
 
-            context.Response.StatusCode = StatusCodes.Status500InternalServerError;
-            context.Response.ContentType = "application/json";
-
-            var response = new
-            {
-                title = "An unexpected error occurred.",
-                status = StatusCodes.Status500InternalServerError
-            };
-
-            await context.Response.WriteAsync(
-                JsonSerializer.Serialize(response));
+            await WriteProblemDetailsAsync(
+                context,
+                StatusCodes.Status500InternalServerError,
+                "Internal Server Error",
+                "An unexpected error occurred.");
         }
+    }
+
+    private async Task WriteProblemDetailsAsync(
+        HttpContext context,
+        int statusCode,
+        string title,
+        string detail)
+    {
+        var problem = new ProblemDetails
+        {
+            Type = "about:blank",
+            Title = title,
+            Status = statusCode,
+            Detail = detail
+        };
+
+        problem.Extensions["requestId"] =
+            Activity.Current?.Id ?? context.TraceIdentifier;
+
+        context.Response.StatusCode = statusCode;
+        context.Response.ContentType = "application/problem+json";
+
+        await context.Response.WriteAsJsonAsync(problem);
     }
 }
