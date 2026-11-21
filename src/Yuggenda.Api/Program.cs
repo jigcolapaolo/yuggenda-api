@@ -107,6 +107,7 @@ builder.Services.AddScoped<IAuthorizationHandler, BusinessPermissionHandler>();
 
 var app = builder.Build();
 
+app.UseMiddleware<RequestIdMiddleware>();
 app.UseMiddleware<ExceptionHandlingMiddleware>();
 
 app.UseAuthentication();

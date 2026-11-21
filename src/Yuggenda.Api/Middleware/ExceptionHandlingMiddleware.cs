@@ -94,8 +94,7 @@ public class ExceptionHandlingMiddleware
             Detail = detail
         };
 
-        problem.Extensions["requestId"] =
-            Activity.Current?.Id ?? context.TraceIdentifier;
+        problem.Extensions["requestId"] = context.TraceIdentifier;
 
         context.Response.StatusCode = statusCode;
         context.Response.ContentType = "application/problem+json";
