@@ -66,11 +66,11 @@ public class ExceptionHandlingMiddleware
         }
         catch (Exception exception)
         {
-            _logger.LogError(
-                exception,
-                "An unexpected error occurred while processing {Method} {Path}.",
+            _logger.LogError(exception,
+                "An unexpected error occurred while processing {Method} {Path}. RequestId: {RequestId}",
                 context.Request.Method,
-                context.Request.Path);
+                context.Request.Path,
+                context.TraceIdentifier);
 
             await WriteProblemDetailsAsync(
                 context,
