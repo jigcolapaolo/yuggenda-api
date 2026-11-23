@@ -22,15 +22,24 @@ public class UnitOfWork : IUnitOfWork
         {
             await _context.SaveChangesAsync(cancellationToken);
         }
-        catch (DbUpdateException exception)
-            when (exception.InnerException is PostgresException postgresException
-                && postgresException.SqlState == PostgresErrorCodes.ExclusionViolation
-                && postgresException.ConstraintName ==
-                    "EX_appointments_member_time_overlap")
-        {
-            throw new ConflictException(
-                "The selected time conflicts with another appointment."
-            );
-        }
+            catch (DbUpdateException exception)
+                when (exception.InnerException is PostgresException postgresException
+                    && postgresException.SqlState == PostgresErrorCodes.ExclusionViolation
+                    && postgresException.ConstraintName ==
+                        "EX_appointments_member_time_overlap")
+            {
+                throw new ConflictException(
+                    "The selected time conflicts with another appointment."
+                );
+            }
+
+            catch (DbUpdateException exception)
+                when (exception.InnerException is PostgresException postgresException
+                    && postgresException.SqlState == PostgresErrorCodes.RestrictViolation)
+            {
+                throw new ConflictException(
+                    "The operation cannot be completed because related records exist."
+                );
+            }
     }
 }
