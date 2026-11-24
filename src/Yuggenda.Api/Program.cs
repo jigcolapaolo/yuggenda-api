@@ -13,6 +13,7 @@ using Yuggenda.Api.Authentication;
 using Yuggenda.Api.Authorization;
 using Microsoft.AspNetCore.Authorization;
 using Yuggenda.Domain.Enums;
+using Microsoft.AspNetCore.Mvc;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -98,6 +99,32 @@ builder.Services
             ValidateLifetime = true,
             ClockSkew = TimeSpan.Zero
         };
+
+            options.Events = new JwtBearerEvents
+            {
+                OnChallenge = async context =>
+                {
+                    // Evita que ASP.NET Core genere su respuesta predeterminada.
+                    context.HandleResponse();
+
+                    var problem = new ProblemDetails
+                    {
+                        Type = "about:blank",
+                        Title = "Unauthorized",
+                        Status = StatusCodes.Status401Unauthorized,
+                        Detail = "Authentication is required or the access token is invalid."
+                    };
+
+                    problem.Extensions["requestId"] =
+                        context.HttpContext.TraceIdentifier;
+
+                    context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+
+                    context.Response.ContentType = "application/problem+json";
+
+                    await context.Response.WriteAsJsonAsync(problem);
+                }
+            };
     });
 
 builder.Services.AddYuggendaAuthorization();
