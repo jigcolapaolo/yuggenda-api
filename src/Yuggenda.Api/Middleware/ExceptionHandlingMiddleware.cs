@@ -40,6 +40,11 @@ public class ExceptionHandlingMiddleware
                 "Conflict",
                 exception.Message);
         }
+        catch (ForbiddenException exception)
+        {
+            await WriteProblemDetailsAsync(
+                context, 403, "Forbidden", exception.Message);
+        }
         catch (UnauthorizedAccessException exception)
         {
             await WriteProblemDetailsAsync(

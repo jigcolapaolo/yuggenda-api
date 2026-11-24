@@ -414,7 +414,7 @@ public class AppointmentService
                 return;
         }
 
-        throw new UnauthorizedAccessException(
+        throw new ForbiddenException(
             "You do not have access to this appointment.");
     }
 
