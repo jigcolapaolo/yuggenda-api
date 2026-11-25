@@ -104,7 +104,6 @@ builder.Services
             {
                 OnChallenge = async context =>
                 {
-                    // Evita que ASP.NET Core genere su respuesta predeterminada.
                     context.HandleResponse();
 
                     var problem = new ProblemDetails
@@ -121,6 +120,24 @@ builder.Services
                     context.Response.StatusCode = StatusCodes.Status401Unauthorized;
 
                     context.Response.ContentType = "application/problem+json";
+
+                    await context.Response.WriteAsJsonAsync(problem);
+                },
+                OnForbidden = async context =>
+                {
+                    var problem = new ProblemDetails
+                    {
+                        Type = "about:blank",
+                        Title = "Forbidden",
+                        Status = StatusCodes.Status403Forbidden,
+                        Detail = "You do not have permission to access this resource."
+                    };
+
+                    problem.Extensions["requestId"] =
+                        context.HttpContext.TraceIdentifier;
+
+                    context.Response.ContentType = "application/problem+json";
+                    context.Response.StatusCode = StatusCodes.Status403Forbidden;
 
                     await context.Response.WriteAsJsonAsync(problem);
                 }
