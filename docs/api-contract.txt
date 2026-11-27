@@ -33,20 +33,25 @@ Example:
 
 ## 2. Error Response
 
-Error responses use the appropriate HTTP status code and provide enough information to identify the type of error without exposing internal application details.
+Error responses use the Problem Details format defined by RFC 9457.
+
+The response includes the HTTP status code, a title, a human-readable detail, and a request identifier for tracing purposes.
 
 Example:
 
 ```json
 {
-  "statusCode": 404,
-  "message": "Appointment not found",
-  "error": "Not Found",
+  "type": "about:blank",
+  "title": "Conflict",
+  "status": 409,
+  "detail": "The selected time conflicts with another appointment.",
   "requestId": "550e8400-e29b-41d4-a716-446655440000"
 }
 ```
 
-The `requestId` allows the request associated with the error to be identified and traced.
+The `requestId` allows the request associated with the error to be identified and traced through application logs.
+
+Internal implementation details, stack traces, database errors, and sensitive information must not be exposed to clients.
 
 ---
 
@@ -67,12 +72,10 @@ Example:
 
 ```json
 {
-  "statusCode": 400,
-  "message": [
-    "email must be a valid email",
-    "duration must be greater than 0"
-  ],
-  "error": "Bad Request",
+  "type": "about:blank",
+  "title": "Bad Request",
+  "status": 400,
+  "detail": "The request contains invalid data.",
   "requestId": "..."
 }
 ```
@@ -88,16 +91,15 @@ Examples:
 * Missing JWT.
 * Invalid JWT.
 * Expired access token.
-* Invalid refresh token.
-* Expired refresh token.
 
 Example:
 
 ```json
 {
-  "statusCode": 401,
-  "message": "Unauthorized",
-  "error": "Unauthorized",
+  "type": "about:blank",
+  "title": "Unauthorized",
+  "status": 401,
+  "detail": "Authentication is required or the access token is invalid.",
   "requestId": "..."
 }
 ```
@@ -110,9 +112,10 @@ Example:
 
 ```json
 {
-  "statusCode": 403,
-  "message": "Business access denied",
-  "error": "Forbidden",
+  "type": "about:blank",
+  "title": "Forbidden",
+  "status": 403,
+  "detail": "You do not have permission to access this resource.",
   "requestId": "..."
 }
 ```
@@ -125,9 +128,10 @@ Example:
 
 ```json
 {
-  "statusCode": 404,
-  "message": "Service not found",
-  "error": "Not Found",
+  "type": "about:blank",
+  "title": "Not Found",
+  "status": 404,
+  "detail": "Service not found.",
   "requestId": "..."
 }
 ```
@@ -143,14 +147,16 @@ Examples:
 * Appointment time conflict.
 * Staff member has a conflicting appointment.
 * Invalid appointment state transition.
+* Attempting to delete a resource that has related records.
 
 Example:
 
 ```json
 {
-  "statusCode": 409,
-  "message": "The selected time slot is no longer available",
-  "error": "Conflict",
+  "type": "about:blank",
+  "title": "Conflict",
+  "status": 409,
+  "detail": "The selected time conflicts with another appointment.",
   "requestId": "..."
 }
 ```
@@ -159,34 +165,24 @@ Example:
 
 The request is structurally valid but cannot be processed because it violates a domain rule.
 
-Examples:
+This status code may be introduced for specific domain validation scenarios when required.
 
-* Staff member cannot provide the selected service.
-* Appointment is outside staff availability.
-* Inactive service selected for booking.
-
-Example:
-
-```json
-{
-  "statusCode": 422,
-  "message": "The selected staff member is not available at this time",
-  "error": "Unprocessable Entity",
-  "requestId": "..."
-}
-```
+Domain rule violations are currently mapped to `409 Conflict`.
 
 ### 429 - Too Many Requests
 
-The client has exceeded the configured rate limit for the endpoint.
+The client has exceeded the configured rate limit.
+
+Rate limiting is not currently implemented.
 
 Example:
 
 ```json
 {
-  "statusCode": 429,
-  "message": "Too many requests",
-  "error": "Too Many Requests",
+  "type": "about:blank",
+  "title": "Too Many Requests",
+  "status": 429,
+  "detail": "Too many requests.",
   "requestId": "..."
 }
 ```
@@ -201,8 +197,10 @@ Example:
 
 ```json
 {
-  "statusCode": 500,
-  "message": "Internal server error",
+  "type": "about:blank",
+  "title": "Internal Server Error",
+  "status": 500,
+  "detail": "An unexpected error occurred.",
   "requestId": "..."
 }
 ```
@@ -211,13 +209,15 @@ Example:
 
 ## 4. Request ID
 
-Each request is assigned a unique request identifier by the API.
+Each request is assigned a request identifier by the API.
 
-The identifier is exposed through the `X-Request-Id` response header and is included in error responses through the `requestId` field.
+The API accepts an externally provided `X-Request-Id` only if it satisfies the configured validation rules. Otherwise, a new identifier is generated.
+
+The identifier is exposed through the `X-Request-Id` response header and included in error responses through the `requestId` field.
 
 Example:
 
-```text
+```http
 X-Request-Id: 550e8400-e29b-41d4-a716-446655440000
 ```
 
@@ -225,14 +225,15 @@ Example error response:
 
 ```json
 {
-  "statusCode": 409,
-  "message": "The selected time slot is no longer available",
-  "error": "Conflict",
+  "type": "about:blank",
+  "title": "Conflict",
+  "status": 409,
+  "detail": "The selected time conflicts with another appointment.",
   "requestId": "550e8400-e29b-41d4-a716-446655440000"
 }
 ```
 
-The request identifier allows application logs and API responses to be correlated.
+The request identifier is propagated to structured application logs through logging scopes, allowing API responses and application logs to be correlated.
 
 ---
 
@@ -274,9 +275,12 @@ Example:
 * Authorization failures should return `403 Forbidden`.
 * Missing resources should return `404 Not Found`.
 * Resource or scheduling conflicts should return `409 Conflict`.
-* Domain validation failures that are structurally valid but cannot be processed may return `422 Unprocessable Entity`.
+* Domain rule violations are currently mapped to `409 Conflict`. More specific mappings, such as `422 Unprocessable Entity`, may be introduced when required.
+* Rate limiting may return `429 Too Many Requests` once implemented.
 * Internal errors must not expose implementation details.
 * Error responses should include a `requestId`.
+* Error responses use the Problem Details format defined by RFC 9457.
+* The `X-Request-Id` response header should be present on every request.
 * Endpoints should use resource-oriented naming conventions.
 * Protected endpoints should use JWT Bearer authentication.
 * Appointment operations should clearly communicate scheduling conflicts and invalid state transitions.
