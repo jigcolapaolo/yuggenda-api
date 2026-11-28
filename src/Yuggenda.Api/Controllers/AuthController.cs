@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using Yuggenda.Application.Abstractions.Authentication;
 using Yuggenda.Application.DTOs.Authentication;
 using Yuggenda.Application.DTOs.Users;
@@ -29,6 +30,7 @@ public class AuthController : ControllerBase
         _currentUser = currentUser;
     }
 
+    [EnableRateLimiting("Register")]
     [HttpPost("register")]
     public async Task<ActionResult<UserResponse>> Register(
         RegisterUserRequest request,
@@ -43,6 +45,7 @@ public class AuthController : ControllerBase
         return StatusCode(StatusCodes.Status201Created, response);
     }
 
+    [EnableRateLimiting("Login")] 
     [HttpPost("login")]
     public async Task<ActionResult<LoginResponse>> Login(
         LoginRequest request,
